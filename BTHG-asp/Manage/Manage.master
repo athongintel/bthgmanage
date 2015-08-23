@@ -1,0 +1,25 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/Super.master" AutoEventWireup="true" CodeFile="Manage.master.cs" Inherits="Manage_Manage" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder" runat="Server">
+    <div align="center">
+        <table width="80%">
+            <tr>
+                <td style="background-image: none; background-repeat: repeat-x; vertical-align: middle; text-align: right; background-color: #808080;">                    
+                    <asp:Button ID="btBack0" runat="server" Text="Trở về trang quản lý" OnClick="btBack_Click" CausesValidation="False" Height="30px" Width="150px" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server"></asp:ContentPlaceHolder>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right; vertical-align: middle; background-image: none; background-repeat: repeat-x; background-color: #808080;">                    
+                    <asp:Button ID="btBack" runat="server" Text="Trở về trang quản lý" OnClick="btBack_Click" CausesValidation="False" Height="30px" Width="150px" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br />
+</asp:Content>
+

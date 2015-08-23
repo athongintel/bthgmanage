@@ -1,0 +1,46 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" MasterPageFile="~/Super.master" CodeFile="Site.master.cs"
+    Inherits="Site" %>
+
+<asp:Content runat="server" ContentPlaceHolderID="ContentPlaceHolder">
+    <div align="center">
+        <table width="80%">
+            <tr>
+                <td style="width: 80%" align="left">
+                    <div style="text-align: center">
+                        <asp:Menu ID="menuMain" runat="server" BackColor="#FFFBD6" DynamicHorizontalOffset="2"
+                            Font-Names="Calibri" Font-Size="Large" ForeColor="#990000" Orientation="Horizontal"
+                            StaticSubMenuIndent="10px" DisappearAfter="100" Font-Bold="True">
+                            <DynamicHoverStyle BackColor="#990000" ForeColor="White" />
+                            <DynamicMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
+                            <DynamicMenuStyle BackColor="#FFFBD6" />
+                            <DynamicSelectedStyle BackColor="#FFCC66" />
+                            <Items>
+                                <asp:MenuItem Text="Trang chủ" Value="Trang chủ" NavigateUrl="~/Default.aspx"></asp:MenuItem>
+                                <asp:MenuItem Text="Liên hệ" Value="Liên hệ" NavigateUrl="~/Contact.aspx"></asp:MenuItem>
+                            </Items>
+                            <StaticHoverStyle BackColor="#990000" ForeColor="White" />
+                            <StaticMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" BackColor="Silver"
+                                Width="100px" />
+                            <StaticSelectedStyle BackColor="#FFCC66" />
+                        </asp:Menu>
+                    </div>
+                </td>
+                <td style="width: 20%" align="right">
+                    <asp:HyperLink ID="HyperLink1" CssClass="linkbutton" runat="server" NavigateUrl="~/Login.aspx">Đăng nhập</asp:HyperLink>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="border: 3px; border-color: Teal; border-style: groove">
+                    <br />
+                    <br />
+                    <br />
+                    <asp:ContentPlaceHolder runat="server" ID="MainContent">
+                    </asp:ContentPlaceHolder>
+                    <br />
+                    <br />
+                    <br />
+                </td>
+            </tr>
+        </table>
+    </div>
+</asp:Content>

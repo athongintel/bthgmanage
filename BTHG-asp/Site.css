@@ -1,0 +1,10 @@
+﻿.linkbutton
+{
+    font-size:18px;
+    color:Teal;    
+}
+.errormessage
+{
+    color:Red;
+    font-style:italic;    
+}
