@@ -19,7 +19,7 @@ public partial class Control_Login : System.Web.UI.UserControl
         string username = tbUserName.Text.Trim();
         string password = tbPassword.Text.Trim();
         tbLogin l = null;
-        l = db.tbLogins.FirstOrDefault(x=>x.Username.Equals(username));
+        l = db.tbLogin.FirstOrDefault(x=>x.Username.Equals(username));
         if (l == null)
         {
             Response.Write("<script>alert('Tài khoản không tồn tại!')</script>");

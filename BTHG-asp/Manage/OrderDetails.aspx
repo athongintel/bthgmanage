@@ -110,6 +110,13 @@
             <tr>
                 <td colspan="4" style="text-align: right">
                     <br />
+                    Chọn ngôn ngữ &nbsp
+                    <asp:DropDownList ID="listLanguage" runat="server" DataSourceID="BTHG" DataTextField="LanguageName" DataValueField="IDLanguage">
+                    </asp:DropDownList>
+                    <asp:SqlDataSource ID="BTHG" runat="server" ConnectionString="<%$ ConnectionStrings:BTHGConnectionString %>" SelectCommand="SELECT [IDLanguage], [LanguageName] FROM [tbLanguage] ORDER BY [LanguageName]"></asp:SqlDataSource>
+                    <asp:EntityDataSource ID="EntityDataSource1" runat="server">
+                    </asp:EntityDataSource>
+                    &nbsp;
                     <asp:Button ID="btExcel" runat="server" Text="Xuất ra Excel (admin)" OnClick="btExcel_Click" Visible="False" />
                     &nbsp;<asp:Button ID="btPDF" runat="server" Text="Xuất ra PDF" OnClick="btPDF_Click" Visible="False" />
                 </td>

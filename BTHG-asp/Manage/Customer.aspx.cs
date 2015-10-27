@@ -49,7 +49,7 @@ public partial class Manage_Director_Customer : System.Web.UI.Page
     {
         BTHGDataContext db = new BTHGDataContext();
         ViewState["currentCustomerID"]=ID;
-        tbCustomer customer = db.tbCustomers.FirstOrDefault(x => x.IDCustomer.ToString().Equals(ID));
+        tbCustomer customer = db.tbCustomer.FirstOrDefault(x => x.IDCustomer.ToString().Equals(ID));
         lbCustomerName.Text = customer.Name;
         lbAddress.Text = customer.Address;
         lbFax.Text = customer.Fax;
@@ -87,7 +87,7 @@ public partial class Manage_Director_Customer : System.Web.UI.Page
         c.Commission = Int32.Parse(tbCommission.Text);
         c.Email = tbEmail.Text;
         c.IDCustomer = Int32.Parse(currentCustomerID);
-        db.tbCustomerContacts.InsertOnSubmit(c);
+        db.tbCustomerContact.InsertOnSubmit(c);
         db.SubmitChanges();
         pnAdd.Visible = false;
         btAddContact.Text = "Thêm contact";
@@ -167,12 +167,12 @@ public partial class Manage_Director_Customer : System.Web.UI.Page
     {
         currentCustomerID = (string)ViewState["currentCustomerID"];
         BTHGDataContext db = new BTHGDataContext();
-        tbCustomer customer = db.tbCustomers.Single(x => x.IDCustomer.ToString().Equals(currentCustomerID));
-        if (!customer.Name.Equals(txtEditName.Text) && db.tbCustomers.Count(x => x.Name.Equals(txtEditName.Text)) > 0)
+        tbCustomer customer = db.tbCustomer.Single(x => x.IDCustomer.ToString().Equals(currentCustomerID));
+        if (!customer.Name.Equals(txtEditName.Text) && db.tbCustomer.Count(x => x.Name.Equals(txtEditName.Text)) > 0)
         {
             Response.Write("<script>alert('Tên khách hàng mới bị trùng!')</script>");
         }
-        else if (!customer.CustomerCode.Equals(txtEditCode.Text) && db.tbCustomers.Count(x => x.CustomerCode.Equals(txtEditCode.Text)) > 0)
+        else if (!customer.CustomerCode.Equals(txtEditCode.Text) && db.tbCustomer.Count(x => x.CustomerCode.Equals(txtEditCode.Text)) > 0)
         {
             Response.Write("<script>alert('Mã khách hàng mới bị trùng!')</script>");
         }

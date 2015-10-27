@@ -1,14 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="BTHG" Class="BTHGDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="WebSettings" ConnectionString="Data Source=.\SQLExpress;Initial Catalog=BTHG;Integrated Security=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="BTHGConnectionString" Provider="System.Data.SqlClient" />
-  <Table Name="dbo.tbBrand" Member="tbBrands">
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="BTHGMSDB" Class="BTHGDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=118.69.204.199;Initial Catalog=BTHGMSDB;User ID=bthg" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="BTHGConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.tbBrand" Member="tbBrand">
     <Type Name="tbBrand">
       <Column Name="IDBrand" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="Origin" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
-      <Association Name="tbBrand_tbProduct" Member="tbProducts" ThisKey="IDBrand" OtherKey="IDBrand" Type="tbProduct" />
+      <Association Name="tbBrand_tbProduct" Member="tbProduct" ThisKey="IDBrand" OtherKey="IDBrand" Type="tbProduct" />
     </Type>
   </Table>
-  <Table Name="dbo.tbSupply" Member="tbSupplies">
+  <Table Name="dbo.tbSupply" Member="tbSupply">
     <Type Name="tbSupply">
       <Column Name="IDSupplier" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="IDProduct" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -16,7 +16,7 @@
       <Association Name="tbSupplier_tbSupply" Member="tbSupplier" ThisKey="IDSupplier" OtherKey="IDSupplier" Type="tbSupplier" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.tbBuyingHistory" Member="tbBuyingHistories">
+  <Table Name="dbo.tbBuyingHistory" Member="tbBuyingHistory">
     <Type Name="tbBuyingHistory">
       <Column Name="IDBuyingHistory" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="IDSupplier" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
@@ -24,11 +24,11 @@
       <Column Name="DeliveryDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
       <Column Name="TotalPrice" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="ShippingFee" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
-      <Association Name="tbBuyingHistory_tbBuyingHistoryDetail" Member="tbBuyingHistoryDetails" ThisKey="IDBuyingHistory" OtherKey="IDBuyingHistory" Type="tbBuyingHistoryDetail" />
+      <Association Name="tbBuyingHistory_tbBuyingHistoryDetail" Member="tbBuyingHistoryDetail" ThisKey="IDBuyingHistory" OtherKey="IDBuyingHistory" Type="tbBuyingHistoryDetail" />
       <Association Name="tbSupplier_tbBuyingHistory" Member="tbSupplier" ThisKey="IDSupplier" OtherKey="IDSupplier" Type="tbSupplier" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.tbBuyingHistoryDetail" Member="tbBuyingHistoryDetails">
+  <Table Name="dbo.tbBuyingHistoryDetail" Member="tbBuyingHistoryDetail">
     <Type Name="tbBuyingHistoryDetail">
       <Column Name="IDBuyingHistory" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="IDProduct" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -37,7 +37,7 @@
       <Association Name="tbProduct_tbBuyingHistoryDetail" Member="tbProduct" ThisKey="IDProduct" OtherKey="IDProduct" Type="tbProduct" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.tbCustomer" Member="tbCustomers">
+  <Table Name="dbo.tbCustomer" Member="tbCustomer">
     <Type Name="tbCustomer">
       <Column Name="IDCustomer" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="CustomerCode" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
@@ -46,10 +46,10 @@
       <Column Name="Tel" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
       <Column Name="Fax" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
       <Column Name="TaxNumber" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Association Name="tbCustomer_tbCustomerContact" Member="tbCustomerContacts" ThisKey="IDCustomer" OtherKey="IDCustomer" Type="tbCustomerContact" />
+      <Association Name="tbCustomer_tbCustomerContact" Member="tbCustomerContact" ThisKey="IDCustomer" OtherKey="IDCustomer" Type="tbCustomerContact" />
     </Type>
   </Table>
-  <Table Name="dbo.tbCustomerContact" Member="tbCustomerContacts">
+  <Table Name="dbo.tbCustomerContact" Member="tbCustomerContact">
     <Type Name="tbCustomerContact">
       <Column Name="IDCustomerContact" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="IDCustomer" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
@@ -60,11 +60,11 @@
       <Column Name="Tel" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
       <Column Name="Email" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="Commission" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="tbCustomerContact_tbSellingHistory" Member="tbSellingHistories" ThisKey="IDCustomerContact" OtherKey="IDCustomerContact" Type="tbSellingHistory" />
+      <Association Name="tbCustomerContact_tbSellingHistory" Member="tbSellingHistory" ThisKey="IDCustomerContact" OtherKey="IDCustomerContact" Type="tbSellingHistory" />
       <Association Name="tbCustomer_tbCustomerContact" Member="tbCustomer" ThisKey="IDCustomer" OtherKey="IDCustomer" Type="tbCustomer" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.tbLogin" Member="tbLogins">
+  <Table Name="dbo.tbLogin" Member="tbLogin">
     <Type Name="tbLogin">
       <Column Name="Username" Type="System.String" DbType="VarChar(40) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Password" Type="System.String" DbType="VarChar(40) NOT NULL" CanBeNull="false" />
@@ -73,9 +73,9 @@
       <Association Name="tbStaff_tbLogin" Member="tbStaff" ThisKey="IDStaff" OtherKey="IDStaff" Type="tbStaff" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.tbPriceHistory" Member="tbPriceHistories">
+  <Table Name="dbo.tbPriceHistory" Member="tbPriceHistory">
     <Type Name="tbPriceHistory">
-      <Column Name="IDProduct" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="IDProduct" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="ChangeDate" Type="System.DateTime" DbType="DateTime NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="FromPrice" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="ToPrice" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
@@ -84,7 +84,7 @@
       <Association Name="tbStaff_tbPriceHistory" Member="tbStaff" ThisKey="IDStaff" OtherKey="IDStaff" Type="tbStaff" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.tbProduct" Member="tbProducts">
+  <Table Name="dbo.tbProduct" Member="tbProduct">
     <Type Name="tbProduct">
       <Column Name="IDProduct" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="IDBrand" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
@@ -97,31 +97,31 @@
       <Column Name="Price" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="Discount" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="AvailableNumber" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="tbProduct_tbSupply" Member="tbSupplies" ThisKey="IDProduct" OtherKey="IDProduct" Type="tbSupply" />
-      <Association Name="tbProduct_tbBuyingHistoryDetail" Member="tbBuyingHistoryDetails" ThisKey="IDProduct" OtherKey="IDProduct" Type="tbBuyingHistoryDetail" />
-      <Association Name="tbProduct_tbPriceHistory" Member="tbPriceHistories" ThisKey="IDProduct" OtherKey="IDProduct" Type="tbPriceHistory" />
-      <Association Name="tbProduct_tbSellingHistoryDetail" Member="tbSellingHistoryDetails" ThisKey="IDProduct" OtherKey="IDProduct" Type="tbSellingHistoryDetail" />
+      <Association Name="tbProduct_tbSupply" Member="tbSupply" ThisKey="IDProduct" OtherKey="IDProduct" Type="tbSupply" />
+      <Association Name="tbProduct_tbBuyingHistoryDetail" Member="tbBuyingHistoryDetail" ThisKey="IDProduct" OtherKey="IDProduct" Type="tbBuyingHistoryDetail" />
+      <Association Name="tbProduct_tbPriceHistory" Member="tbPriceHistory" ThisKey="IDProduct" OtherKey="IDProduct" Type="tbPriceHistory" />
+      <Association Name="tbProduct_tbSellingHistoryDetail" Member="tbSellingHistoryDetail" ThisKey="IDProduct" OtherKey="IDProduct" Type="tbSellingHistoryDetail" />
       <Association Name="tbBrand_tbProduct" Member="tbBrand" ThisKey="IDBrand" OtherKey="IDBrand" Type="tbBrand" IsForeignKey="true" />
       <Association Name="tbProductType_tbProduct" Member="tbProductType" ThisKey="IDProductType" OtherKey="IDProductType" Type="tbProductType" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.tbProductGroup" Member="tbProductGroups">
+  <Table Name="dbo.tbProductGroup" Member="tbProductGroup">
     <Type Name="tbProductGroup">
       <Column Name="IDGroup" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Association Name="tbProductGroup_tbProductType" Member="tbProductTypes" ThisKey="IDGroup" OtherKey="IDGroup" Type="tbProductType" />
+      <Association Name="tbProductGroup_tbProductType" Member="tbProductType" ThisKey="IDGroup" OtherKey="IDGroup" Type="tbProductType" />
     </Type>
   </Table>
-  <Table Name="dbo.tbProductType" Member="tbProductTypes">
+  <Table Name="dbo.tbProductType" Member="tbProductType">
     <Type Name="tbProductType">
       <Column Name="IDProductType" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="IDGroup" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Association Name="tbProductType_tbProduct" Member="tbProducts" ThisKey="IDProductType" OtherKey="IDProductType" Type="tbProduct" />
+      <Association Name="tbProductType_tbProduct" Member="tbProduct" ThisKey="IDProductType" OtherKey="IDProductType" Type="tbProduct" />
       <Association Name="tbProductGroup_tbProductType" Member="tbProductGroup" ThisKey="IDGroup" OtherKey="IDGroup" Type="tbProductGroup" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.tbSellingHistory" Member="tbSellingHistories">
+  <Table Name="dbo.tbSellingHistory" Member="tbSellingHistory">
     <Type Name="tbSellingHistory">
       <Column Name="OrderNo" Type="System.String" DbType="VarChar(50) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="IDCustomerContact" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
@@ -131,12 +131,12 @@
       <Column Name="Terms" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
       <Column Name="OrderName" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="IsHidden" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="tbSellingHistory_tbSellingHistoryDetail" Member="tbSellingHistoryDetails" ThisKey="OrderNo" OtherKey="OrderNo" Type="tbSellingHistoryDetail" />
+      <Association Name="tbSellingHistory_tbSellingHistoryDetail" Member="tbSellingHistoryDetail" ThisKey="OrderNo" OtherKey="OrderNo" Type="tbSellingHistoryDetail" />
       <Association Name="tbCustomerContact_tbSellingHistory" Member="tbCustomerContact" ThisKey="IDCustomerContact" OtherKey="IDCustomerContact" Type="tbCustomerContact" IsForeignKey="true" />
       <Association Name="tbStaff_tbSellingHistory" Member="tbStaff" ThisKey="IDStaff" OtherKey="IDStaff" Type="tbStaff" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.tbSellingHistoryDetail" Member="tbSellingHistoryDetails">
+  <Table Name="dbo.tbSellingHistoryDetail" Member="tbSellingHistoryDetail">
     <Type Name="tbSellingHistoryDetail">
       <Column Name="OrderNo" Type="System.String" DbType="VarChar(50) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="IDProduct" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -148,7 +148,7 @@
       <Association Name="tbSellingHistory_tbSellingHistoryDetail" Member="tbSellingHistory" ThisKey="OrderNo" OtherKey="OrderNo" Type="tbSellingHistory" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.tbStaff" Member="tbStaffs">
+  <Table Name="dbo.tbStaff" Member="tbStaff">
     <Type Name="tbStaff">
       <Column Name="IDStaff" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
@@ -158,12 +158,12 @@
       <Column Name="Image" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Column Name="IDCard" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
       <Column Name="Address" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Association Name="tbStaff_tbLogin" Member="tbLogins" ThisKey="IDStaff" OtherKey="IDStaff" Type="tbLogin" />
-      <Association Name="tbStaff_tbPriceHistory" Member="tbPriceHistories" ThisKey="IDStaff" OtherKey="IDStaff" Type="tbPriceHistory" />
-      <Association Name="tbStaff_tbSellingHistory" Member="tbSellingHistories" ThisKey="IDStaff" OtherKey="IDStaff" Type="tbSellingHistory" />
+      <Association Name="tbStaff_tbLogin" Member="tbLogin" ThisKey="IDStaff" OtherKey="IDStaff" Type="tbLogin" />
+      <Association Name="tbStaff_tbPriceHistory" Member="tbPriceHistory" ThisKey="IDStaff" OtherKey="IDStaff" Type="tbPriceHistory" />
+      <Association Name="tbStaff_tbSellingHistory" Member="tbSellingHistory" ThisKey="IDStaff" OtherKey="IDStaff" Type="tbSellingHistory" />
     </Type>
   </Table>
-  <Table Name="dbo.tbSupplier" Member="tbSuppliers">
+  <Table Name="dbo.tbSupplier" Member="tbSupplier">
     <Type Name="tbSupplier">
       <Column Name="IDSupplier" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
@@ -174,12 +174,12 @@
       <Column Name="Bank" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="BankAddress" Type="System.String" DbType="NVarChar(300)" CanBeNull="true" />
       <Column Name="Website" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-      <Association Name="tbSupplier_tbSupply" Member="tbSupplies" ThisKey="IDSupplier" OtherKey="IDSupplier" Type="tbSupply" />
-      <Association Name="tbSupplier_tbBuyingHistory" Member="tbBuyingHistories" ThisKey="IDSupplier" OtherKey="IDSupplier" Type="tbBuyingHistory" />
-      <Association Name="tbSupplier_tbSupplierContact" Member="tbSupplierContacts" ThisKey="IDSupplier" OtherKey="IDSupplier" Type="tbSupplierContact" />
+      <Association Name="tbSupplier_tbSupply" Member="tbSupply" ThisKey="IDSupplier" OtherKey="IDSupplier" Type="tbSupply" />
+      <Association Name="tbSupplier_tbBuyingHistory" Member="tbBuyingHistory" ThisKey="IDSupplier" OtherKey="IDSupplier" Type="tbBuyingHistory" />
+      <Association Name="tbSupplier_tbSupplierContact" Member="tbSupplierContact" ThisKey="IDSupplier" OtherKey="IDSupplier" Type="tbSupplierContact" />
     </Type>
   </Table>
-  <Table Name="dbo.tbSupplierContact" Member="tbSupplierContacts">
+  <Table Name="dbo.tbSupplierContact" Member="tbSupplierContact">
     <Type Name="tbSupplierContact">
       <Column Name="IDSupplierContact" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="IDSupplier" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
@@ -187,6 +187,28 @@
       <Column Name="Tel" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
       <Column Name="Email" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Association Name="tbSupplier_tbSupplierContact" Member="tbSupplier" ThisKey="IDSupplier" OtherKey="IDSupplier" Type="tbSupplier" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="bthg.tbLanguage" Member="tbLanguage">
+    <Type Name="tbLanguage">
+      <Column Name="IDLanguage" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="LanguageName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="tbLanguage_tbLanguageTranslation" Member="tbLanguageTranslation" ThisKey="IDLanguage" OtherKey="IDLanguage" Type="tbLanguageTranslation" />
+    </Type>
+  </Table>
+  <Table Name="bthg.tbLanguageConcept" Member="tbLanguageConcept">
+    <Type Name="tbLanguageConcept">
+      <Column Name="LanguageConcept" Type="System.String" DbType="NVarChar(200) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="tbLanguageConcept_tbLanguageTranslation" Member="tbLanguageTranslation" ThisKey="LanguageConcept" OtherKey="LanguageConcept" Type="tbLanguageTranslation" />
+    </Type>
+  </Table>
+  <Table Name="bthg.tbLanguageTranslation" Member="tbLanguageTranslation">
+    <Type Name="tbLanguageTranslation">
+      <Column Name="LanguageConcept" Type="System.String" DbType="NVarChar(200) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="IDLanguage" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Translation" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="tbLanguage_tbLanguageTranslation" Member="tbLanguage" ThisKey="IDLanguage" OtherKey="IDLanguage" Type="tbLanguage" IsForeignKey="true" />
+      <Association Name="tbLanguageConcept_tbLanguageTranslation" Member="tbLanguageConcept" ThisKey="LanguageConcept" OtherKey="LanguageConcept" Type="tbLanguageConcept" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

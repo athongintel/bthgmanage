@@ -26,7 +26,7 @@ public partial class Manage_Director_Product : System.Web.UI.Page
         if (!"".Equals(liGroup.SelectedValue))
         {
             BTHGDataContext db = new BTHGDataContext();
-            liType.DataSource = db.tbProductTypes.Where(x=>x.IDGroup.ToString().Equals(liGroup.SelectedValue)).OrderBy(x=>x.Name);
+            liType.DataSource = db.tbProductType.Where(x=>x.IDGroup.ToString().Equals(liGroup.SelectedValue)).OrderBy(x=>x.Name);
             liType.DataBound += liType_DataBound;
             liType.DataBind();
         }
@@ -42,7 +42,7 @@ public partial class Manage_Director_Product : System.Web.UI.Page
         if (!"".Equals(liGroup.SelectedValue))
         {
             BTHGDataContext db = new BTHGDataContext();
-            liBrand.DataSource = db.tbBrands.Where(x => db.tbProducts.Count(y => y.IDProductType.ToString().Equals(liType.SelectedValue) && y.IDBrand == x.IDBrand) > 0).OrderBy(x=>x.Name);
+            liBrand.DataSource = db.tbBrand.Where(x => db.tbProduct.Count(y => y.IDProductType.ToString().Equals(liType.SelectedValue) && y.IDBrand == x.IDBrand) > 0).OrderBy(x=>x.Name);
             liBrand.DataBind();            
         }
     }
@@ -54,7 +54,7 @@ public partial class Manage_Director_Product : System.Web.UI.Page
 
         if (rbShowAll.Checked)
         {
-            list = db.tbProducts.Where(x => true).OrderBy(x=>x.tbProductType.Name).ToList();
+            list = db.tbProduct.Where(x => true).OrderBy(x=>x.tbProductType.Name).ToList();
             GridView1.DataSource = list;
             GridView1.DataBind();
         }
@@ -62,7 +62,7 @@ public partial class Manage_Director_Product : System.Web.UI.Page
         {
             if (!liBrand.SelectedValue.Equals(""))
             {
-                list = db.tbProducts.Where(x => x.IDProductType.ToString().Equals(liType.SelectedValue) && x.IDBrand.ToString().Equals(liBrand.SelectedValue)).OrderBy(x=>x.tbProductType.Name).ToList();
+                list = db.tbProduct.Where(x => x.IDProductType.ToString().Equals(liType.SelectedValue) && x.IDBrand.ToString().Equals(liBrand.SelectedValue)).OrderBy(x=>x.tbProductType.Name).ToList();
                 GridView1.DataSource = list;
                 GridView1.DataBind();
             }

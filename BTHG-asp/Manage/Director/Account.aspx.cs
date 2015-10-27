@@ -36,7 +36,7 @@ public partial class Manage_Director_Account : System.Web.UI.Page
         tbLogin login = new tbLogin();
         login.Username = txtUsername.Text.Trim();
         //check username
-        if (db.tbLogins.Count(x => x.Username.Equals(login.Username)) > 0)
+        if (db.tbLogin.Count(x => x.Username.Equals(login.Username)) > 0)
         {
             Response.Write("<script>alert('Tên tài khoản đã được sử dụng!')</script");
         }
@@ -45,7 +45,7 @@ public partial class Manage_Director_Account : System.Web.UI.Page
             login.Password = txtPassword.Text;
             login.IDStaff = Int32.Parse(liStaff.SelectedValue);
             login.Role = Int32.Parse(liRole.SelectedValue);
-            db.tbLogins.InsertOnSubmit(login);
+            db.tbLogin.InsertOnSubmit(login);
             db.SubmitChanges();
             GridView1.DataBind();
             btCancel_Click(null, null);

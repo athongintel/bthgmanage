@@ -21,11 +21,11 @@ public partial class Manage_Director_AddCustomer : System.Web.UI.Page
         tbCustomer customer = new tbCustomer();
         customer.Name = txtName.Text;
         customer.CustomerCode = txtCustomerCode.Text;
-        if (db.tbCustomers.Count(x=>x.Name.Equals(customer.Name))>0)
+        if (db.tbCustomer.Count(x=>x.Name.Equals(customer.Name))>0)
         {
             Response.Write("<script>alert('Tên khách hàng bị trùng!')</script>");
         }
-        else if (db.tbCustomers.Count(x=>x.CustomerCode.Equals(customer.CustomerCode))>0)
+        else if (db.tbCustomer.Count(x=>x.CustomerCode.Equals(customer.CustomerCode))>0)
         {
             Response.Write("<script>alert('Mã khách hàng bị trùng!')</script>");
         }
@@ -36,7 +36,7 @@ public partial class Manage_Director_AddCustomer : System.Web.UI.Page
             customer.Tel = txtTel.Text;
             customer.TaxNumber = txtTaxNumber.Text;
 
-            db.tbCustomers.InsertOnSubmit(customer);
+            db.tbCustomer.InsertOnSubmit(customer);
             db.SubmitChanges();
             Response.Redirect("~/Manage/Customer.aspx");
         }

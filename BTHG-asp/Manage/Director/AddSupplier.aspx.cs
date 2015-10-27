@@ -25,7 +25,7 @@ public partial class Manage_Director_AddSupplier : System.Web.UI.Page
         supplier.SWIFT = txtSWIFT.Text.Trim();
         supplier.Website = txtWebsite.Text.Trim();
 
-        db.tbSuppliers.InsertOnSubmit(supplier);
+        db.tbSupplier.InsertOnSubmit(supplier);
         db.SubmitChanges();
         Response.Redirect("~/Manage/Supplier.aspx");
     }

@@ -43,7 +43,7 @@ public partial class Control_SetDeliveryDate : System.Web.UI.UserControl
     {
         //set orderdate
         BTHGDataContext db = new BTHGDataContext();
-        tbSellingHistory order = db.tbSellingHistories.Single(x => x.OrderNo.Equals(lbOrderNo.Text));
+        tbSellingHistory order = db.tbSellingHistory.Single(x => x.OrderNo.Equals(lbOrderNo.Text));
         order.DeliveryDate = DatePicker1.Date;
         db.SubmitChanges();
         Response.Redirect("~/Manage/OrderList.aspx?IDCustomer="+order.tbCustomerContact.tbCustomer.IDCustomer);

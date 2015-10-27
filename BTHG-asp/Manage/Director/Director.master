@@ -58,6 +58,7 @@
                                     <asp:MenuItem Text="Nhân viên" NavigateUrl="~/Manage/Director/Staff.aspx"></asp:MenuItem>
                                     <asp:MenuItem Text="Tài khoản đăng nhập" NavigateUrl="~/Manage/Director/Account.aspx"></asp:MenuItem>
                                 </asp:MenuItem>
+                                <asp:MenuItem NavigateUrl="~/Manage/Director/Languages.aspx" Text="Quản lí ngôn ngữ" Value="Quản lí ngôn ngữ"></asp:MenuItem>
                             </Items>
                             <StaticHoverStyle BackColor="#990000" ForeColor="White" />
                             <StaticMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" BackColor="Silver" Height="20px" Width="120px" BorderWidth="1px" Font-Size="10pt" />

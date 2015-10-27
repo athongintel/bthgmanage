@@ -26,7 +26,7 @@ public class Global
     public static string getBrandName(int IDBrand)
     {
         BTHGDataContext db = new BTHGDataContext();
-        return db.tbBrands.Single(x=>x.IDBrand==IDBrand).Name;
+        return db.tbBrand.Single(x=>x.IDBrand==IDBrand).Name;
     }
 
     public static string currencyFormat(double price)
@@ -89,9 +89,9 @@ public class Global
 
         double result;
         db = new BTHGDataContext();
-        result = db.tbProducts.Single(x => x.IDProduct == IDProduct).Price;
+        result = db.tbProduct.Single(x => x.IDProduct == IDProduct).Price;
 
-        List<tbPriceHistory> priceHistory = db.tbPriceHistories.Where(x => x.IDProduct == IDProduct).OrderByDescending(x => x.ChangeDate).ToList();
+        List<tbPriceHistory> priceHistory = db.tbPriceHistory.Where(x => x.IDProduct == IDProduct).OrderByDescending(x => x.ChangeDate).ToList();
         foreach (tbPriceHistory price in priceHistory)
         {
             if (atDate <= price.ChangeDate)
@@ -109,7 +109,7 @@ public class Global
     public static string getStaffName(int IDStaff)
     {
         BTHGDataContext db = new BTHGDataContext();
-        return db.tbStaffs.Single(x => x.IDStaff == IDStaff).Name;
+        return db.tbStaff.Single(x => x.IDStaff == IDStaff).Name;
     }
 
     public static string getRoleName(int Role)
@@ -130,19 +130,19 @@ public class Global
     public static string getProductTypeName(int IDProductType)
     {
         BTHGDataContext db = new BTHGDataContext();
-        return db.tbProductTypes.Single(x => x.IDProductType == IDProductType).Name;
+        return db.tbProductType.Single(x => x.IDProductType == IDProductType).Name;
     }
 
     public static string getSupplierName(int IDSupplier)
     {
         BTHGDataContext db = new BTHGDataContext();
-        return db.tbSuppliers.Single(x => x.IDSupplier == IDSupplier).Name;
+        return db.tbSupplier.Single(x => x.IDSupplier == IDSupplier).Name;
     }
 
     public static bool isVendor(int IDSupplier, int IDProduct)
     {
         BTHGDataContext db = new BTHGDataContext();
-        return db.tbSupplies.Where(x => x.IDSupplier == IDSupplier && x.IDProduct==IDProduct).ToList().Count==1;
+        return db.tbSupply.Where(x => x.IDSupplier == IDSupplier && x.IDProduct==IDProduct).ToList().Count==1;
     }
 
     public static bool isAdmin()

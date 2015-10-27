@@ -46,14 +46,14 @@ public partial class Manage_Director_ProductType : System.Web.UI.Page
             tbProductType productType = new tbProductType();
             productType.Name = txtProductType.Text;
             productType.IDGroup = Int32.Parse(liGroup.SelectedValue);
-            if (db.tbProductTypes.Count(x => x.Name.Equals(productType.Name)) > 0)
+            if (db.tbProductType.Count(x => x.Name.Equals(productType.Name)) > 0)
             {
                 //product exist
                 Response.Write("<script>alert('Loại sản phẩm đã tồn tại!')</script>");
             }
             else
             {
-                db.tbProductTypes.InsertOnSubmit(productType);
+                db.tbProductType.InsertOnSubmit(productType);
                 db.SubmitChanges();
                 GridView1.DataBind();
             }
@@ -82,14 +82,14 @@ public partial class Manage_Director_ProductType : System.Web.UI.Page
         tbBrand brand = new tbBrand();
         brand.Name = txtName.Text;
         //check
-        if (db.tbBrands.Count(x => x.Name.Equals(brand.Name)) > 0)
+        if (db.tbBrand.Count(x => x.Name.Equals(brand.Name)) > 0)
         {
             Response.Write("<script>alert('Thương hiệu đã tồn tại!')</script>");
         }
         else
         {
             brand.Origin = txtOrigin.Text;
-            db.tbBrands.InsertOnSubmit(brand);
+            db.tbBrand.InsertOnSubmit(brand);
             db.SubmitChanges();
             txtName.Text = "";
             txtOrigin.Text = "";
@@ -169,13 +169,13 @@ public partial class Manage_Director_ProductType : System.Web.UI.Page
         tbProductGroup group = new tbProductGroup();
         group.Name = txtGroupName.Text;
         //check if exist
-        if (db.tbProductGroups.Count(x => x.Name.Equals(group.Name)) > 0)
+        if (db.tbProductGroup.Count(x => x.Name.Equals(group.Name)) > 0)
         {
             Response.Write("<script>alert('Tên nhóm đã tồn tại')</script>");
         }
         else
         {
-            db.tbProductGroups.InsertOnSubmit(group);
+            db.tbProductGroup.InsertOnSubmit(group);
             db.SubmitChanges();
             GridView3.DataBind();
             btGroupCancel_Click(null, null);

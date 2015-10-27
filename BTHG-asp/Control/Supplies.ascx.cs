@@ -13,7 +13,7 @@ public partial class Control_Supplies : System.Web.UI.UserControl
     {
         BTHGDataContext db = new BTHGDataContext();
         List<tbSupply> supplies;
-        supplies = db.tbSupplies.Where(x => x.IDProduct == IDProduct).ToList();
+        supplies = db.tbSupply.Where(x => x.IDProduct == IDProduct).ToList();
         if (supplies.Count==0)
         {
             lbNoInfo.Visible = true;
@@ -33,7 +33,7 @@ public partial class Control_Supplies : System.Web.UI.UserControl
         ViewState["IDProduct"] = IDProduct;
         pnEditMode.Visible = true;
 
-        rptEdit.DataSource = db.tbSuppliers.Where(x => true).ToList();
+        rptEdit.DataSource = db.tbSupplier.Where(x => true).ToList();
         rptEdit.DataBind();
     }
 
@@ -50,24 +50,24 @@ public partial class Control_Supplies : System.Web.UI.UserControl
             if (c.Checked)
             {
                  //check if item is already in collection
-                tbSupply supply = db.tbSupplies.FirstOrDefault(x => x.IDProduct == productID && x.IDSupplier == IDSupplier);
+                tbSupply supply = db.tbSupply.FirstOrDefault(x => x.IDProduct == productID && x.IDSupplier == IDSupplier);
                 if (supply==null)
                 {
                     //insert new
                     tbSupply newSupply = new tbSupply();
                     newSupply.IDProduct = productID;
                     newSupply.IDSupplier = IDSupplier;
-                    db.tbSupplies.InsertOnSubmit(newSupply);
+                    db.tbSupply.InsertOnSubmit(newSupply);
                 }
             }
             else
             {
                 //check if item is already in collection
-                tbSupply supply = db.tbSupplies.FirstOrDefault(x => x.IDProduct == productID && x.IDSupplier == IDSupplier);
+                tbSupply supply = db.tbSupply.FirstOrDefault(x => x.IDProduct == productID && x.IDSupplier == IDSupplier);
                 if (supply!=null)
                 {
                     //remove
-                    db.tbSupplies.DeleteOnSubmit(supply);
+                    db.tbSupply.DeleteOnSubmit(supply);
                 }
             }
         }

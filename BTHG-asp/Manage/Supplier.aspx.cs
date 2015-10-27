@@ -40,7 +40,7 @@ public partial class Manage_Director_Supplier : System.Web.UI.Page
         if (!"".Equals(liSupplier.SelectedValue))
         {
             BTHGDataContext db = new BTHGDataContext();
-            tbSupplier supplier = db.tbSuppliers.Single(x => x.IDSupplier.ToString().Equals(liSupplier.SelectedValue));
+            tbSupplier supplier = db.tbSupplier.Single(x => x.IDSupplier.ToString().Equals(liSupplier.SelectedValue));
             lbName.Text = supplier.Name;
             lbBank.Text = supplier.Bank;
             lbBankAddress.Text = supplier.BankAddress;
@@ -128,7 +128,7 @@ public partial class Manage_Director_Supplier : System.Web.UI.Page
     protected void btSave_Click(object sender, EventArgs e)
     {
         BTHGDataContext db = new BTHGDataContext();
-        tbSupplier supplier = db.tbSuppliers.Single(x=>x.IDSupplier.ToString().Equals(liSupplier.SelectedValue));
+        tbSupplier supplier = db.tbSupplier.Single(x=>x.IDSupplier.ToString().Equals(liSupplier.SelectedValue));
 
         supplier.Name = txtEditName.Text.Trim();
         supplier.Bank = txtEditBank.Text.Trim();
@@ -170,7 +170,7 @@ public partial class Manage_Director_Supplier : System.Web.UI.Page
             contact.Name = txtName.Text.Trim();
             contact.Email = txtEmail.Text.Trim();
             contact.Tel = txtTel.Text.Trim();
-            db.tbSupplierContacts.InsertOnSubmit(contact);
+            db.tbSupplierContact.InsertOnSubmit(contact);
             db.SubmitChanges();
             btCancelAdd_Click(null, null);
             loadContact();

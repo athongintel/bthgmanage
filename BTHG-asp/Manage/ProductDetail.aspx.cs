@@ -75,7 +75,7 @@ public partial class Manage_Director_ProductDetail : System.Web.UI.Page
                         img3.Visible = true;
 
                         int productID = Int32.Parse(Request.QueryString["IDProduct"]);
-                        tbProduct p = db.tbProducts.FirstOrDefault(x => x.IDProduct == productID);
+                        tbProduct p = db.tbProduct.FirstOrDefault(x => x.IDProduct == productID);
                         if (p != null)
                         {
                             lbModel.Text = p.Model;
@@ -130,7 +130,7 @@ public partial class Manage_Director_ProductDetail : System.Web.UI.Page
                         RequiredFieldValidator5.Visible = true;
 
                         int productID = Int32.Parse(Request.QueryString["IDProduct"]);
-                        tbProduct p = db.tbProducts.FirstOrDefault(x => x.IDProduct == productID);
+                        tbProduct p = db.tbProduct.FirstOrDefault(x => x.IDProduct == productID);
                         if (p != null)
                         {
                             txtModel.Text = p.Model;
@@ -173,7 +173,7 @@ public partial class Manage_Director_ProductDetail : System.Web.UI.Page
             product.Model = txtModel.Text;
 
             //check if product exist
-            if (db.tbProducts.Count(x => x.IDProductType == product.IDProductType && x.Model.Equals(product.Model)) > 0)
+            if (db.tbProduct.Count(x => x.IDProductType == product.IDProductType && x.Model.Equals(product.Model)) > 0)
             {
                 Response.Write("<script>alert('Sản phẩm đã tồn tại!')</script>");
             }
@@ -192,7 +192,7 @@ public partial class Manage_Director_ProductDetail : System.Web.UI.Page
                 product.Discount = Global.removeCurrencyFormat(txtDiscount.Text);
                 product.AvailableNumber = Int32.Parse(txtAvailable.Text);
 
-                db.tbProducts.InsertOnSubmit(product);
+                db.tbProduct.InsertOnSubmit(product);
                 db.SubmitChanges();
 
                 if (chkKeep.Checked)
@@ -226,7 +226,7 @@ public partial class Manage_Director_ProductDetail : System.Web.UI.Page
     {
         BTHGDataContext db = new BTHGDataContext();
 
-        tbProduct product = db.tbProducts.FirstOrDefault(x => x.IDProduct == Int32.Parse(Request.QueryString["IDProduct"]));
+        tbProduct product = db.tbProduct.FirstOrDefault(x => x.IDProduct == Int32.Parse(Request.QueryString["IDProduct"]));
 
         if (product != null)
         {
@@ -247,12 +247,12 @@ public partial class Manage_Director_ProductDetail : System.Web.UI.Page
 
                 if (selectedBrand != product.tbBrand.IDBrand)
                 {
-                    product.tbBrand = db.tbBrands.Single(x => x.IDBrand == selectedBrand);
+                    product.tbBrand = db.tbBrand.Single(x => x.IDBrand == selectedBrand);
                 }
 
                 if (selectedProductType != product.tbProductType.IDProductType)
                 {
-                    product.tbProductType = db.tbProductTypes.Single(x => x.IDProductType == selectedProductType);
+                    product.tbProductType = db.tbProductType.Single(x => x.IDProductType == selectedProductType);
                 }
 
                 product.Model = txtModel.Text;
@@ -275,7 +275,7 @@ public partial class Manage_Director_ProductDetail : System.Web.UI.Page
                     priceHistory.FromPrice = product.Price;
                     priceHistory.ToPrice = newProductPrice;
                     priceHistory.IDStaff = ((Authentication)Session[Global.LOGIN]).IDStaff;
-                    db.tbPriceHistories.InsertOnSubmit(priceHistory);
+                    db.tbPriceHistory.InsertOnSubmit(priceHistory);
                 }
                 Supplies1.save();
                 product.Price = newProductPrice;
@@ -303,7 +303,7 @@ public partial class Manage_Director_ProductDetail : System.Web.UI.Page
         if (!"".Equals(IDGroup))
         {
             BTHGDataContext db = new BTHGDataContext();
-            liType.DataSource = db.tbProductTypes.Where(x => x.IDGroup.ToString().Equals(IDGroup)).OrderBy(x => x.Name);
+            liType.DataSource = db.tbProductType.Where(x => x.IDGroup.ToString().Equals(IDGroup)).OrderBy(x => x.Name);
             liType.DataBind();
         }
     }

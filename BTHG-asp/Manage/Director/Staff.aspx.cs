@@ -28,7 +28,7 @@ public partial class Manage_Director_Staff : System.Web.UI.Page
         staff.Position = txtPosition.Text.Trim();
         staff.Email = txtEmail.Text.Trim();
         staff.Tel = txtTel.Text.Trim();
-        db.tbStaffs.InsertOnSubmit(staff);
+        db.tbStaff.InsertOnSubmit(staff);
         db.SubmitChanges();
         GridView1.DataBind();
         btCancel_Click(null, null);

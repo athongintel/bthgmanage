@@ -33,7 +33,7 @@ public partial class Manage_PriceChange : System.Web.UI.Page
         if (!"".Equals(liProductType.SelectedValue))
         {
             db = new BTHGDataContext();
-            liProduct.DataSource = db.tbProducts.Where(x => x.IDProductType.ToString().Equals(liProductType.SelectedValue)).OrderBy(x=>x.Model).ToList();
+            liProduct.DataSource = db.tbProduct.Where(x => x.IDProductType.ToString().Equals(liProductType.SelectedValue)).OrderBy(x=>x.Model).ToList();
             liProduct.DataBind();
             refreshList();
         }
@@ -48,7 +48,7 @@ public partial class Manage_PriceChange : System.Web.UI.Page
         db = new BTHGDataContext();
         if (!"".Equals(liProduct.SelectedValue))
         {            
-            GridView1.DataSource = db.tbPriceHistories.Where(x => x.IDProduct.ToString().Equals(liProduct.SelectedValue)).OrderByDescending(x=>x.ChangeDate).ToList();            
+            GridView1.DataSource = db.tbPriceHistory.Where(x => x.IDProduct.ToString().Equals(liProduct.SelectedValue)).OrderByDescending(x=>x.ChangeDate).ToList();            
         }
         else
         {
@@ -60,7 +60,7 @@ public partial class Manage_PriceChange : System.Web.UI.Page
     protected string getStaffName(int IDStaff)
     {
         db = new BTHGDataContext();
-        return db.tbStaffs.Single(x => x.IDStaff==IDStaff).Name;
+        return db.tbStaff.Single(x => x.IDStaff==IDStaff).Name;
     }
     protected void btBack_Click(object sender, EventArgs e)
     {
@@ -95,7 +95,7 @@ public partial class Manage_PriceChange : System.Web.UI.Page
         if (!"".Equals(liGroup.SelectedValue))
         {
             BTHGDataContext db = new BTHGDataContext();
-            liProductType.DataSource = db.tbProductTypes.Where(x => x.IDGroup.ToString().Equals(liGroup.SelectedValue)).OrderBy(x => x.Name);
+            liProductType.DataSource = db.tbProductType.Where(x => x.IDGroup.ToString().Equals(liGroup.SelectedValue)).OrderBy(x => x.Name);
             liProductType.DataBound += liProductType_DataBound;
             liProductType.DataBind();
         }

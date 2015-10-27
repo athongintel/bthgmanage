@@ -39,10 +39,10 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
-        {            
+        {       
             string order = Request.QueryString["order"];
             db = new BTHGDataContext();
-            tbSellingHistory history = db.tbSellingHistories.FirstOrDefault(x => x.OrderNo.Equals(order));
+            tbSellingHistory history = db.tbSellingHistory.FirstOrDefault(x => x.OrderNo.Equals(order));
             if (history!=null)
             {
                 lbOrderName.Text = history.OrderName;
@@ -52,7 +52,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
                 lbOrderDate.Text = history.OrderDate.ToString("dd/MM/yyyy HH:mm:ss");                
                 lbStaff.Text = history.tbStaff.Name;
                 txtTerms.Text = history.Terms;
-                List<tbSellingHistoryDetail> details = db.tbSellingHistoryDetails.Where(x => x.OrderNo.Equals(order)).OrderBy(x=>x.No).ToList();
+                List<tbSellingHistoryDetail> details = db.tbSellingHistoryDetail.Where(x => x.OrderNo.Equals(order)).OrderBy(x=>x.No).ToList();
                 
                 liInfo = new List<Info>();
                 double totalprice = 0;
@@ -88,10 +88,17 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
     
     private void makeExcelFile()
     {
+        //load language
+        db = new BTHGDataContext();
+        int selectedLanguage = Int32.Parse(listLanguage.SelectedValue);
+        List<tbLanguageTranslation> trs = db.tbLanguageTranslation.Where(x=> x.IDLanguage==selectedLanguage).ToList();
+        Dictionary<String, String> translation = trs.ToDictionary(x=> x.LanguageConcept, x => x.Translation);
+        
+
         btExcel.Enabled = false;
         //init data
         db = new BTHGDataContext();
-        tbSellingHistory history = db.tbSellingHistories.FirstOrDefault(x => x.OrderNo.Equals(lbOrderNo.Text));
+        tbSellingHistory history = db.tbSellingHistory.FirstOrDefault(x => x.OrderNo.Equals(lbOrderNo.Text));
         liInfo = (List<Info>)ViewState["listInfo"];
 
         //load info
@@ -163,7 +170,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         range.Style.Font.Size = 30 * 20;
         range.Style.Font.Color = Color.Black;
         range.Style.Font.Weight = ExcelFont.BoldWeight;
-        range.Value = "BÁO GIÁ CUNG CẤP THIẾT BỊ";
+        range.Value = translation["quotation_header_title"];//"BÁO GIÁ CUNG CẤP THIẾT BỊ";
 
         //-----------ADDRESS
         cell = xlWorkSheet.Cells["A10"];        
@@ -368,21 +375,21 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         range.Style.Font.Size = 16 * 20;
         range.Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
         range.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
-        range.Value = "Kính gửi " + history.tbCustomerContact.Title + " " + history.tbCustomerContact.LastName;
+        range.Value = /*"Kính gửi "*/ translation["quotation_dear"] + " " + history.tbCustomerContact.Title + " " + history.tbCustomerContact.LastName;
 
         range = xlWorkSheet.Cells.GetSubrange("A18", "H18");
         range.Merged = true;
         range.Style.Font.Size = 16 * 20;
         range.Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
         range.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
-        range.Value = "Cảm ơn Quý khách đã quan tâm và sử dụng dịch vụ của công ty chúng tôi";
+        range.Value = translation["quotation_header_salutation"];//"Cảm ơn Quý khách đã quan tâm và sử dụng dịch vụ của công ty chúng tôi";
 
         range = xlWorkSheet.Cells.GetSubrange("A19", "H19");
         range.Merged = true;
         range.Style.Font.Size = 16 * 20;
         range.Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
         range.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
-        range.Value = "Theo yêu cầu của Quý khách, chúng tôi kính gởi báo giá cung cấp/sửa chữa thiết bị như bên dưới.";
+        range.Value = translation["quotation_header_provide"];//"Theo yêu cầu của Quý khách, chúng tôi kính gởi báo giá cung cấp/sửa chữa thiết bị như bên dưới.";
 
 
         range = xlWorkSheet.Cells.GetSubrange("A21", "A22");
@@ -401,7 +408,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         range.Style.Font.Size = 16 * 20;
         range.Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
         range.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
-        range.Value = "Chi tiết";
+        range.Value = translation["quotation_list_detail"]; //"Chi tiết";
         range.Style.Font.Weight = ExcelFont.BoldWeight;
 
 
@@ -411,7 +418,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         range.Style.Font.Size = 16 * 20;
         range.Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
         range.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
-        range.Value = "Slg";
+        range.Value = translation["quotation_list_quantity"]; //"Slg";
         range.Style.Font.Weight = ExcelFont.BoldWeight;
 
 
@@ -422,7 +429,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         range.Style.Font.Size = 16 * 20;
         range.Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
         range.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
-        range.Value = "Đơn giá (VND)";
+        range.Value = translation["quotation_list_price"]; //"Đơn giá (VND)";
         range.Style.Font.Weight = ExcelFont.BoldWeight;
 
 
@@ -433,7 +440,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         range.Style.Font.Size = 16 * 20;
         range.Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
         range.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
-        range.Value = "Giá thành (VND)";
+        range.Value = translation["quotation_list_realcost"];// "Giá thành (VND)";
         range.Style.Font.Weight = ExcelFont.BoldWeight;
 
 
@@ -443,14 +450,14 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         range.Style.Font.Size = 16 * 20;
         range.Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
         range.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
-        range.Value = "Ghi chú";
+        range.Value = translation["quotation_list_note"]; //"Ghi chú";
         range.Style.Font.Weight = ExcelFont.BoldWeight;
 
 
         cell = xlWorkSheet.Cells["B22"];
         cell.Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
         cell.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
-        cell.Value = "Thiết bị";
+        cell.Value = translation["quotation_list_item"]; //"Thiết bị";
         cell.Style.Font.Size = 16 * 20;
         cell.Style.Font.UnderlineStyle = UnderlineStyle.Single;
         cell.Style.Font.Color = Color.DarkBlue;
@@ -460,7 +467,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         cell.Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
         cell.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
         cell.Style.WrapText = true;
-        cell.Value = "Model, Thông số kỹ thuật";
+        cell.Value = translation["quotation_list_specs"];// "Model, Thông số kỹ thuật";
         cell.Style.Font.Size = 16 * 20;
         cell.Style.Font.UnderlineStyle = UnderlineStyle.Single;
         cell.Style.Font.Color = Color.DarkBlue;
@@ -469,7 +476,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         cell = xlWorkSheet.Cells["D22"];
         cell.Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
         cell.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
-        cell.Value = "Hình ảnh";
+        cell.Value = translation["quotation_list_photo"];// "Hình ảnh";
         cell.Style.Font.Size = 16 * 20;
         cell.Style.Font.UnderlineStyle = UnderlineStyle.Single;
         cell.Style.Font.Color = Color.DarkBlue;
@@ -480,7 +487,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         for (int i = 0; i < liInfo.Count; i++)
         {
             Info info = liInfo.ElementAt(i);
-            tbProduct p = db.tbProducts.Single(x => x.IDProduct == info.IDProduct);
+            tbProduct p = db.tbProduct.Single(x => x.IDProduct == info.IDProduct);
             cell = xlWorkSheet.Cells["A" + (startrow + i)];
             cell.Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
             cell.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
@@ -569,7 +576,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         cell.Style.Font.Weight = ExcelFont.BoldWeight;
         cell.Style.Font.Name = "Arial";
         cell.Style.Font.Color = Color.Black;
-        cell.Value = "Tổng cộng";
+        cell.Value = translation["quotation_pricetotal"]; //"Tổng cộng";
         cell.SetBorders(MultipleBorders.Outside, Color.Black, LineStyle.Medium);
 
         cell = xlWorkSheet.Cells["G" + (startrow + liInfo.Count)];
@@ -596,7 +603,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         range.Style.Font.UnderlineStyle = UnderlineStyle.Single;
 
         range.Style.Font.Color = Color.Black;
-        range.Value = "Terms & Conditions :";
+        range.Value = translation["quotation_term"]; //"Terms & Conditions :";
 
         //--terms
         string[] terms = history.Terms.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
@@ -618,7 +625,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         range.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
         range.Style.Font.Size = 16 * 20;
         range.Style.Font.Color = Color.Black;
-        range.Value = "Xác nhận của khách hàng";
+        range.Value = translation["quotation_customerverify"]; //"Xác nhận của khách hàng";
 
         range = xlWorkSheet.Cells.GetSubrange("F" + (footerstart + 3 + terms.Length), "G" + (footerstart + 3 + terms.Length));
         range.Merged = true;
@@ -626,7 +633,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         range.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
         range.Style.Font.Size = 16 * 20;
         range.Style.Font.Color = Color.Black;
-        range.Value = "Người lập báo giá";
+        range.Value = translation["quotation_maker"]; //"Người lập báo giá";
 
         range = xlWorkSheet.Cells.GetSubrange("F" + (footerstart + 4 + terms.Length), "G" + (footerstart + 4 + terms.Length));
         range.Merged = true;
@@ -674,7 +681,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
             catch (FileNotFoundException ex)
             {
                 //set product image to null;
-                tbProduct p = db.tbProducts.Single(x => x.IDProduct == info.IDProduct);
+                tbProduct p = db.tbProduct.Single(x => x.IDProduct == info.IDProduct);
                 p.Image1 = null;
                 db.SubmitChanges();
                 info.Image = null;

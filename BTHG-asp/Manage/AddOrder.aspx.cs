@@ -54,7 +54,7 @@ public partial class Manage_Director_AddOrder : System.Web.UI.Page
                 {
                     //ok, we will replace older order based on this information
                     BTHGDataContext db = new BTHGDataContext();
-                    order = db.tbSellingHistories.FirstOrDefault(x => x.OrderNo.Equals(orderNo));                    
+                    order = db.tbSellingHistory.FirstOrDefault(x => x.OrderNo.Equals(orderNo));                    
                     if (order!=null)
                     {                        
                         liCustomer.Enabled = false; //disable the customer list because change in this field leads to change in ordernumber
@@ -63,7 +63,7 @@ public partial class Manage_Director_AddOrder : System.Web.UI.Page
                         lbOrderNumber.Text = orderNo;
                         orderModify = true;
                         //add info of this order to details
-                        List<tbSellingHistoryDetail> orderDetails = db.tbSellingHistoryDetails.Where(x => x.OrderNo.Equals(orderNo)).ToList();
+                        List<tbSellingHistoryDetail> orderDetails = db.tbSellingHistoryDetail.Where(x => x.OrderNo.Equals(orderNo)).ToList();
                         foreach (tbSellingHistoryDetail detail in orderDetails)
                         {
                             Info info = new Info();
@@ -149,7 +149,7 @@ public partial class Manage_Director_AddOrder : System.Web.UI.Page
     public void loadType()
     {
         BTHGDataContext db = new BTHGDataContext();
-        liType.DataSource = db.tbProductTypes.Where(x => x.IDGroup.ToString().Equals(liGroup.SelectedValue)).OrderBy(x=>x.Name);
+        liType.DataSource = db.tbProductType.Where(x => x.IDGroup.ToString().Equals(liGroup.SelectedValue)).OrderBy(x=>x.Name);
         liType.DataBound += liType_DataBound;
         liType.DataBind();
     }
@@ -157,7 +157,7 @@ public partial class Manage_Director_AddOrder : System.Web.UI.Page
     public void loadContact()
     {
         BTHGDataContext db = new BTHGDataContext();
-        liContact.DataSource = db.tbCustomerContacts.Where(x => x.IDCustomer.ToString().Equals(liCustomer.SelectedValue)).OrderBy(x=>x.LastName);
+        liContact.DataSource = db.tbCustomerContact.Where(x => x.IDCustomer.ToString().Equals(liCustomer.SelectedValue)).OrderBy(x=>x.LastName);
         liContact.DataBind();
         
         //if this is a new order, we refresh the list
@@ -172,11 +172,11 @@ public partial class Manage_Director_AddOrder : System.Web.UI.Page
         if (!"".Equals(liType.SelectedValue))
         {            
             db = new BTHGDataContext();
-            liBrand.DataSource = db.tbBrands.Where(x => db.tbProducts.Count(y => y.IDProductType.ToString().Equals(ID) && y.IDBrand == x.IDBrand) > 0).OrderBy(x=>x.Name);            
+            liBrand.DataSource = db.tbBrand.Where(x => db.tbProduct.Count(y => y.IDProductType.ToString().Equals(ID) && y.IDBrand == x.IDBrand) > 0).OrderBy(x=>x.Name);            
         }
         else
         {
-            liBrand.DataSource = db.tbBrands.Where(x=>false);
+            liBrand.DataSource = db.tbBrand.Where(x=>false);
         }
         liBrand.DataBind();        
     }
@@ -193,11 +193,11 @@ public partial class Manage_Director_AddOrder : System.Web.UI.Page
         if (!"".Equals(liBrand.SelectedValue))
         {            
             db = new BTHGDataContext();
-            liProduct.DataSource = db.tbProducts.Where(x => x.IDProductType.ToString().Equals(liType.SelectedValue) && x.IDBrand.ToString().Equals(liBrand.SelectedValue)).OrderBy(x => x.Model);            
+            liProduct.DataSource = db.tbProduct.Where(x => x.IDProductType.ToString().Equals(liType.SelectedValue) && x.IDBrand.ToString().Equals(liBrand.SelectedValue)).OrderBy(x => x.Model);            
         }
         else
         {
-            liProduct.DataSource = db.tbProducts.Where(x=>false);
+            liProduct.DataSource = db.tbProduct.Where(x=>false);
         }
         liProduct.DataBind();
     }
@@ -210,8 +210,8 @@ public partial class Manage_Director_AddOrder : System.Web.UI.Page
     private void updateOrderNumber(string IDCustomer)
     {
         BTHGDataContext db = new BTHGDataContext();
-        tbCustomer customer = db.tbCustomers.Single(x => x.IDCustomer.ToString().Equals(IDCustomer));
-        int numberOfOrders = db.tbSellingHistories.Count(x => x.tbCustomerContact.IDCustomer.ToString().Equals(IDCustomer) && x.OrderDate.Year == Global.getCurrentDateTime().Year) + 1;
+        tbCustomer customer = db.tbCustomer.Single(x => x.IDCustomer.ToString().Equals(IDCustomer));
+        int numberOfOrders = db.tbSellingHistory.Count(x => x.tbCustomerContact.IDCustomer.ToString().Equals(IDCustomer) && x.OrderDate.Year == Global.getCurrentDateTime().Year) + 1;
         string orderNo = customer.CustomerCode + "-" + fixLength(3, numberOfOrders) + "/" + Global.getCurrentDateTime().Year.ToString() + "-BG";
         lbOrderNumber.Text = orderNo;
     }
@@ -252,7 +252,7 @@ public partial class Manage_Director_AddOrder : System.Web.UI.Page
             }
             else
             {
-                tbProduct p = db.tbProducts.Single(x => x.IDProduct.ToString().Equals(liProduct.SelectedValue));
+                tbProduct p = db.tbProduct.Single(x => x.IDProduct.ToString().Equals(liProduct.SelectedValue));
                 Info info = new Info();
                 info.IDProduct = p.IDProduct;
                 info.ProductType = p.tbProductType.Name;
@@ -325,7 +325,7 @@ public partial class Manage_Director_AddOrder : System.Web.UI.Page
             tbSellingHistory oldOrder=null;
             if (ViewState["oldOrder"]!=null)
             {
-                oldOrder = db.tbSellingHistories.FirstOrDefault(x => x.OrderNo.Equals(ViewState["oldOrder"]));
+                oldOrder = db.tbSellingHistory.FirstOrDefault(x => x.OrderNo.Equals(ViewState["oldOrder"]));
             }
 
             if (oldOrder != null)
@@ -335,9 +335,9 @@ public partial class Manage_Director_AddOrder : System.Web.UI.Page
                 history.OrderDate = oldOrder.OrderDate;
 
                 //remove old order
-                db.tbSellingHistoryDetails.DeleteAllOnSubmit(db.tbSellingHistoryDetails.Where(x => x.OrderNo.Equals(oldOrder.OrderNo)));
+                db.tbSellingHistoryDetail.DeleteAllOnSubmit(db.tbSellingHistoryDetail.Where(x => x.OrderNo.Equals(oldOrder.OrderNo)));
                 db.SubmitChanges();
-                db.tbSellingHistories.DeleteOnSubmit(oldOrder);
+                db.tbSellingHistory.DeleteOnSubmit(oldOrder);
                 db.SubmitChanges();
             }
             else
@@ -351,7 +351,7 @@ public partial class Manage_Director_AddOrder : System.Web.UI.Page
             history.IDStaff = auth.IDStaff;
                       
             history.Terms = txtTerms.Text;
-            db.tbSellingHistories.InsertOnSubmit(history);
+            db.tbSellingHistory.InsertOnSubmit(history);
 
             //insert details
             foreach (Info info in liDetails)
@@ -363,7 +363,7 @@ public partial class Manage_Director_AddOrder : System.Web.UI.Page
                 detail.Note = info.Note;
                 detail.Scale = info.Scale;
                 detail.No = info.Order;
-                db.tbSellingHistoryDetails.InsertOnSubmit(detail);
+                db.tbSellingHistoryDetail.InsertOnSubmit(detail);
             }
             db.SubmitChanges();
 
@@ -383,7 +383,7 @@ public partial class Manage_Director_AddOrder : System.Web.UI.Page
         if (!"".Equals(liProduct.SelectedValue))
         {
             BTHGDataContext db = new BTHGDataContext();
-            tbProduct p = db.tbProducts.Single(x => x.IDProduct.ToString().Equals(liProduct.SelectedValue));
+            tbProduct p = db.tbProduct.Single(x => x.IDProduct.ToString().Equals(liProduct.SelectedValue));
             lbPrice.Text = Global.currencyFormat(p.Price);
             txtSpec.Text = p.Specification;
             if (p.Image1 != null)

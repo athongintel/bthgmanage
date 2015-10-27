@@ -34,7 +34,7 @@ public partial class Manage_Director_OrderList : System.Web.UI.Page
         {
             BTHGDataContext db = new BTHGDataContext();
             List<tbSellingHistory> listSH;
-            listSH = db.tbSellingHistories.Where(x => x.IsHidden==0 && x.tbCustomerContact.tbCustomer.IDCustomer.ToString().Equals(DropDownList1.SelectedValue) && !x.Terms.Equals("")).OrderByDescending(x=>x.OrderDate).ToList();
+            listSH = db.tbSellingHistory.Where(x => x.IsHidden==0 && x.tbCustomerContact.tbCustomer.IDCustomer.ToString().Equals(DropDownList1.SelectedValue) && !x.Terms.Equals("")).OrderByDescending(x=>x.OrderDate).ToList();
 
             int soldcount=0;
             foreach (tbSellingHistory item in listSH)
@@ -70,10 +70,10 @@ public partial class Manage_Director_OrderList : System.Web.UI.Page
         string order = (sender as LinkButton).CommandArgument;
         BTHGDataContext db = new BTHGDataContext();
         //check datetime
-        tbSellingHistory history = db.tbSellingHistories.Single(x => x.OrderNo.Equals(order));
+        tbSellingHistory history = db.tbSellingHistory.Single(x => x.OrderNo.Equals(order));
 
         //remove all record in selling details
-        db.tbSellingHistoryDetails.DeleteAllOnSubmit(db.tbSellingHistoryDetails.Where(x=>x.OrderNo.Equals(order)));
+        db.tbSellingHistoryDetail.DeleteAllOnSubmit(db.tbSellingHistoryDetail.Where(x=>x.OrderNo.Equals(order)));
         //remove terms to save space
         history.Terms = "";
         history.IsHidden = 1;
@@ -86,7 +86,7 @@ public partial class Manage_Director_OrderList : System.Web.UI.Page
         string orderNo = (sender as LinkButton).CommandArgument;
         BTHGDataContext db = new BTHGDataContext();
 
-        tbSellingHistory order = db.tbSellingHistories.Single(x => x.OrderNo.Equals(orderNo));
+        tbSellingHistory order = db.tbSellingHistory.Single(x => x.OrderNo.Equals(orderNo));
         Response.Redirect("~/Manage/AddOrder.aspx?orderNo=" + orderNo, true);
     }
 }
