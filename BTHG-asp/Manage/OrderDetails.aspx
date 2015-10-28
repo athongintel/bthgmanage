@@ -135,10 +135,15 @@
                     <br />
                     XUẤT BÁO GIÁ MỚI
                 </td>
-                <td colspan="3" style="text-align: right">Chọn ngôn ngữ
-                    <asp:DropDownList ID="listLanguage" runat="server" DataSourceID="BTHG" DataTextField="LanguageName" DataValueField="IDLanguage" AutoPostBack="true" OnSelectedIndexChanged="listLanguage_SelectedIndexChanged" OnDataBound="listLanguage_DataBound">
+                <td colspan="3" style="text-align: right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td style="text-align:left">
+                    Chọn ngôn ngữ &nbsp;
+                    <asp:DropDownList style="width:200px; height:24px" ID="listLanguage" runat="server" DataSourceID="BTHG" DataTextField="LanguageName" DataValueField="IDLanguage" AutoPostBack="true" OnSelectedIndexChanged="listLanguage_SelectedIndexChanged" OnDataBound="listLanguage_DataBound">
                     </asp:DropDownList>
                     <asp:SqlDataSource ID="BTHG" runat="server" ConnectionString="<%$ ConnectionStrings:BTHGConnectionString %>" SelectCommand="SELECT [IDLanguage], [LanguageName] FROM [tbLanguage] ORDER BY [LanguageName]"></asp:SqlDataSource>
+
                 </td>
             </tr>
             <tr>
