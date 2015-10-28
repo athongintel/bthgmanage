@@ -203,18 +203,12 @@
             <td></td>
         </tr>
         <tr>
-            <td style="background-color: #e4e4e4; height: 29px;">Điều khoản và điều kiện</td>
+            <td style="background-color: #e4e4e4; height: 29px;">&nbsp;</td>
             <td style="text-align: right; height: 29px;">&nbsp;</td>
         </tr>
         <tr>
-            <td colspan="2">
-                <asp:TextBox ID="txtTerms" Width="100%" Height="200px" TextMode="MultiLine" runat="server"></asp:TextBox>
-            </td>
-        </tr>
-        <tr>
             <td style="vertical-align: middle; text-align: left">
-                <asp:Button ID="btSaveTerms" runat="server" Text="Lưu điều khoản mẫu (admin)" Width="204px" OnClick="btSaveTerms_Click" Height="30px" />
-            </td>
+                &nbsp;</td>
             <td style="text-align: right;">&nbsp;
                 <asp:Button ID="btSaveOrder" runat="server" OnClick="btSaveOrder_Click" Text="Lưu báo giá" Width="108px" Height="30px" />
             </td>

@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Drawing;
 using GemBox.Spreadsheet;
+using System.Web.UI.WebControls;
 
 public partial class Manage_Director_OrderDetails : System.Web.UI.Page
-{    
+{
     BTHGDataContext db;
     List<Info> liInfo;
 
@@ -39,30 +37,29 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
-        {       
+        {
             string order = Request.QueryString["order"];
             db = new BTHGDataContext();
             tbSellingHistory history = db.tbSellingHistory.FirstOrDefault(x => x.OrderNo.Equals(order));
-            if (history!=null)
+            if (history != null)
             {
+                ViewState["OrderNo"] = order;
                 lbOrderName.Text = history.OrderName;
                 lbCustomer.Text = history.tbCustomerContact.tbCustomer.Name;
                 lbContact.Text = history.tbCustomerContact.FirstName + " " + history.tbCustomerContact.LastName;
                 lbOrderNo.Text = history.OrderNo;
-                lbOrderDate.Text = history.OrderDate.ToString("dd/MM/yyyy HH:mm:ss");                
+                lbOrderDate.Text = Global.dateTimeFormat(history.OrderDate);
                 lbStaff.Text = history.tbStaff.Name;
-                txtTerms.Text = history.Terms;
-                List<tbSellingHistoryDetail> details = db.tbSellingHistoryDetail.Where(x => x.OrderNo.Equals(order)).OrderBy(x=>x.No).ToList();
-                
+                List<tbSellingHistoryDetail> details = db.tbSellingHistoryDetail.Where(x => x.OrderNo.Equals(order)).OrderBy(x => x.No).ToList();
                 liInfo = new List<Info>();
                 double totalprice = 0;
-                for(int i=0;i<details.Count;i++)
+                for (int i = 0; i < details.Count; i++)
                 {
                     tbSellingHistoryDetail detail = details.ElementAt(i);
                     Info info = new Info();
                     info.Order = i + 1;
                     info.IDProduct = detail.IDProduct;
-                    info.Name=detail.tbProduct.tbProductType.Name;
+                    info.Name = detail.tbProduct.tbProductType.Name;
                     info.Model = detail.tbProduct.Model;
                     info.Image = detail.tbProduct.Image1;
                     info.Quantity = detail.Quantity;
@@ -70,36 +67,42 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
                     info.Scale = detail.Scale;
                     info.Note = detail.Note;
                     liInfo.Add(info);
-                    totalprice += info.Price*(1.0+detail.Scale/100) * info.Quantity;
+                    totalprice += info.Price * (1.0 + detail.Scale / 100) * info.Quantity;
                 }
                 lbTotalPrice.Text = Global.currencyFormat(totalprice);
-                ViewState["listInfo"] = liInfo;
                 gvProduct.DataSource = liInfo;
                 gvProduct.DataBind();
+                listExportedQuotation.DataBind();
                 btExcel.Visible = Global.isAdmin();
                 btPDF.Visible = true;
             }
-            
         }
     }
 
-
-
-    
-    private void makeExcelFile()
+    private string makeQuotationFiles(int IDquotation)
     {
-        //load language
-        db = new BTHGDataContext();
-        int selectedLanguage = Int32.Parse(listLanguage.SelectedValue);
-        List<tbLanguageTranslation> trs = db.tbLanguageTranslation.Where(x=> x.IDLanguage==selectedLanguage).ToList();
-        Dictionary<String, String> translation = trs.ToDictionary(x=> x.LanguageConcept, x => x.Translation);
-        
+        //remove existed files
+        string[] filePaths = Directory.GetFiles(Server.MapPath(Global.PATH_FILES));
+        foreach (string filePath in filePaths)
+        {
+            if (filePath.Contains(".pdf") || filePath.Contains(".xlsx"))
+            {
+                File.Delete(filePath);
+            }
+        }
 
-        btExcel.Enabled = false;
+        db = new BTHGDataContext();
+        tbQuotation quotation = db.tbQuotation.FirstOrDefault(x => x.IDQuotation == IDquotation);
+
+        //load language      
+        List<tbLanguageTranslation> trs = db.tbLanguageTranslation.Where(x => x.IDLanguage == quotation.LanguageID).ToList();
+        Dictionary<String, String> translation = trs.ToDictionary(x => x.LanguageConcept, x => x.Translation);
+
         //init data
         db = new BTHGDataContext();
         tbSellingHistory history = db.tbSellingHistory.FirstOrDefault(x => x.OrderNo.Equals(lbOrderNo.Text));
-        liInfo = (List<Info>)ViewState["listInfo"];
+        
+        List<tbSellingHistoryDetail> details = db.tbSellingHistoryDetail.Where(x => x.OrderNo.Equals(quotation.OrderNo)).OrderBy(x => x.No).ToList();
 
         //load info
         string[] companyinfo = System.Text.Encoding.Unicode.GetString(System.IO.File.ReadAllBytes(Server.MapPath(Global.PATH_INFO))).Split(new[] { "\n" }, StringSplitOptions.None);
@@ -122,7 +125,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         xlWorkSheet.Columns["E"].Width = (int)LengthUnitConverter.Convert(100, LengthUnit.Pixel, LengthUnit.ZeroCharacterWidth256thPart);
         xlWorkSheet.Columns["F"].Width = (int)LengthUnitConverter.Convert(150, LengthUnit.Pixel, LengthUnit.ZeroCharacterWidth256thPart);
         xlWorkSheet.Columns["G"].Width = (int)LengthUnitConverter.Convert(150, LengthUnit.Pixel, LengthUnit.ZeroCharacterWidth256thPart);
-        xlWorkSheet.Columns["H"].Width = (int)LengthUnitConverter.Convert(100, LengthUnit.Pixel, LengthUnit.ZeroCharacterWidth256thPart);    
+        xlWorkSheet.Columns["H"].Width = (int)LengthUnitConverter.Convert(100, LengthUnit.Pixel, LengthUnit.ZeroCharacterWidth256thPart);
 
         range = xlWorkSheet.Cells.GetSubrange("A1", "H6");
         range.SetBorders(MultipleBorders.Outside, Color.Black, LineStyle.Medium);
@@ -173,7 +176,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         range.Value = translation["quotation_header_title"];//"BÁO GIÁ CUNG CẤP THIẾT BỊ";
 
         //-----------ADDRESS
-        cell = xlWorkSheet.Cells["A10"];        
+        cell = xlWorkSheet.Cells["A10"];
         cell.Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
         cell.Style.VerticalAlignment = VerticalAlignmentStyle.Bottom;
         cell.Style.Font.Size = 16 * 20;
@@ -183,7 +186,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
 
         cell = xlWorkSheet.Cells["A11"];
         cell.Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
-        cell.Style.VerticalAlignment = VerticalAlignmentStyle.Center;        
+        cell.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
         cell.Style.Font.Size = 16 * 20;
         cell.Style.Font.Name = "Arial";
         cell.Style.Font.Color = Color.Black;
@@ -331,7 +334,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         range.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
         range.Style.Font.Size = 16 * 20;
         range.Style.Font.Color = Color.Black;
-        range.Value = history.OrderDate.ToString("dd/MM/yyyy");
+        range.Value = quotation.QuoteDate.ToString("dd/MM/yyyy");
 
         range = xlWorkSheet.Cells.GetSubrange("F12", "H12");
         range.Merged = true;
@@ -484,17 +487,17 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
 
         string imagelocation = Server.MapPath(Global.PATH_PRODUCTIMAGE);
         int startrow = 23;
-        for (int i = 0; i < liInfo.Count; i++)
+        for (int i = 0; i < details.Count; i++)
         {
-            Info info = liInfo.ElementAt(i);
+            tbSellingHistoryDetail info = details.ElementAt(i);
             tbProduct p = db.tbProduct.Single(x => x.IDProduct == info.IDProduct);
             cell = xlWorkSheet.Cells["A" + (startrow + i)];
             cell.Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
             cell.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
-            cell.Style.Font.Size = 16 * 20;           
+            cell.Style.Font.Size = 16 * 20;
             cell.Style.Font.Name = "Arial";
             cell.Style.Font.Color = Color.Black;
-            cell.Value = info.Order.ToString();
+            cell.Value = (i+1).ToString();
             cell.SetBorders(MultipleBorders.Outside, Color.Black, LineStyle.Medium);
 
             cell = xlWorkSheet.Cells["B" + (startrow + i)];
@@ -505,23 +508,23 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
             cell.Style.WrapText = true;
             cell.Style.Font.Name = "Arial";
             cell.Style.Font.Color = Color.Black;
-            cell.Value = info.Name;
+            cell.Value = info.tbProduct.tbProductType.Name;
             cell.SetBorders(MultipleBorders.Outside, Color.Black, LineStyle.Medium);
 
             cell = xlWorkSheet.Cells["C" + (startrow + i)];
             cell.Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
-            cell.Style.VerticalAlignment = VerticalAlignmentStyle.Center;            
+            cell.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
             cell.Style.Indent = 2;
             cell.Style.Font.Name = "Arial";
             cell.Style.Font.Size = 16 * 20;
             cell.Style.WrapText = true;
             cell.Style.Font.Color = Color.Black;
-            string model = "\n"                            
+            string model = "\n"
                             + p.tbBrand.Name + " - " + p.tbBrand.Origin + "\n"
-                            + "Model: " + info.Model + "\n\n"
+                            + "Model: " + info.tbProduct.Model + "\n\n"
                             + p.Specification.Trim() + "\n"
                             + "\n";
-                        
+
             cell.Value = model.Replace((char)13, ' ');
             cell.SetBorders(MultipleBorders.Outside, Color.Black, LineStyle.Medium);
 
@@ -543,7 +546,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
             cell.Style.Font.Size = 16 * 20;
             cell.Style.Font.Name = "Arial";
             cell.Style.Font.Color = Color.Black;
-            cell.Value = Global.currencyFormat(info.Price * (1.0 + info.Scale / 100));
+            cell.Value = Global.currencyFormat(info.tbProduct.Price * (1.0 + info.Scale / 100));
             cell.SetBorders(MultipleBorders.Outside, Color.Black, LineStyle.Medium);
 
             cell = xlWorkSheet.Cells["G" + (startrow + i)];
@@ -553,7 +556,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
             cell.Style.Font.Size = 16 * 20;
             cell.Style.Font.Name = "Arial";
             cell.Style.Font.Color = Color.Black;
-            cell.Value = Global.currencyFormat(info.Price*(1.0 + info.Scale/100) * info.Quantity);
+            cell.Value = Global.currencyFormat(info.tbProduct.Price * (1.0 + info.Scale / 100) * info.Quantity);
             cell.SetBorders(MultipleBorders.Outside, Color.Black, LineStyle.Medium);
 
             cell = xlWorkSheet.Cells["H" + (startrow + i)];
@@ -569,7 +572,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
             xlWorkSheet.Rows[startrow + i - 1].AutoFit();
         }
 
-        cell = xlWorkSheet.Cells["F" + (startrow + liInfo.Count)];
+        cell = xlWorkSheet.Cells["F" + (startrow + details.Count)];
         cell.Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
         cell.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
         cell.Style.Font.Size = 16 * 20;
@@ -579,7 +582,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         cell.Value = translation["quotation_pricetotal"]; //"Tổng cộng";
         cell.SetBorders(MultipleBorders.Outside, Color.Black, LineStyle.Medium);
 
-        cell = xlWorkSheet.Cells["G" + (startrow + liInfo.Count)];
+        cell = xlWorkSheet.Cells["G" + (startrow + details.Count)];
         cell.Style.HorizontalAlignment = HorizontalAlignmentStyle.Right;
         cell.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
         cell.Style.Font.Size = 16 * 20;
@@ -589,10 +592,10 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         cell.Value = lbTotalPrice.Text;
         cell.SetBorders(MultipleBorders.Outside, Color.Black, LineStyle.Medium);
 
-        xlWorkSheet.Rows[startrow + liInfo.Count - 1].Height = (int)LengthUnitConverter.Convert(40, LengthUnit.Pixel, LengthUnit.Twip);
+        xlWorkSheet.Rows[startrow + details.Count - 1].Height = (int)LengthUnitConverter.Convert(40, LengthUnit.Pixel, LengthUnit.Twip);
 
         //---------------FOOTER-------------
-        int footerstart = startrow + liInfo.Count + 1;
+        int footerstart = startrow + details.Count + 1;
         range = xlWorkSheet.Cells.GetSubrange("A" + footerstart, "H" + footerstart);
         range.Merged = true;
 
@@ -606,7 +609,7 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         range.Value = translation["quotation_term"]; //"Terms & Conditions :";
 
         //--terms
-        string[] terms = history.Terms.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+        string[] terms = quotation.Terms.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
         for (int i = 0; i < terms.Length; i++)
         {
             range = xlWorkSheet.Cells.GetSubrange("A" + (footerstart + 2 + i), "H" + (footerstart + 2 + i));
@@ -649,13 +652,13 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         range.Style.VerticalAlignment = VerticalAlignmentStyle.Center;
         range.Style.Font.Size = 16 * 20;
         range.Style.Font.Color = Color.Black;
-        range.Value = history.tbStaff.Name;            
+        range.Value = history.tbStaff.Name;
 
         //--set height
         for (int i = 0; i < startrow - 1; i++)
         {
             if (i == 2 || i == 7)
-                xlWorkSheet.Rows[i].Height = (int)LengthUnitConverter.Convert(45, LengthUnit.Pixel, LengthUnit.Twip);            
+                xlWorkSheet.Rows[i].Height = (int)LengthUnitConverter.Convert(45, LengthUnit.Pixel, LengthUnit.Twip);
             else
                 xlWorkSheet.Rows[i].Height = (int)LengthUnitConverter.Convert(25, LengthUnit.Pixel, LengthUnit.Twip);
         }
@@ -665,18 +668,18 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
         xlWorkSheet.Rows[21].Height = (int)LengthUnitConverter.Convert(70, LengthUnit.Pixel, LengthUnit.Twip);
 
         //--header fix border
-        xlWorkSheet.Rows[9].Height = (int)LengthUnitConverter.Convert(40, LengthUnit.Pixel, LengthUnit.Twip);        
-        xlWorkSheet.Rows[14].Height = (int)LengthUnitConverter.Convert(40, LengthUnit.Pixel, LengthUnit.Twip);        
-        
+        xlWorkSheet.Rows[9].Height = (int)LengthUnitConverter.Convert(40, LengthUnit.Pixel, LengthUnit.Twip);
+        xlWorkSheet.Rows[14].Height = (int)LengthUnitConverter.Convert(40, LengthUnit.Pixel, LengthUnit.Twip);
+
         double margin = 10;
 
         //remove image info if image not found      
-        for (int i = 0; i < liInfo.Count; i++)
+        for (int i = 0; i < details.Count; i++)
         {
-            Info info = liInfo.ElementAt(i);
+            tbSellingHistoryDetail info = details.ElementAt(i);
             try
             {
-                System.Drawing.Image img = System.Drawing.Image.FromFile(imagelocation + info.Image);
+                System.Drawing.Image img = System.Drawing.Image.FromFile(imagelocation + info.tbProduct.Image1);
             }
             catch (FileNotFoundException ex)
             {
@@ -684,7 +687,6 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
                 tbProduct p = db.tbProduct.Single(x => x.IDProduct == info.IDProduct);
                 p.Image1 = null;
                 db.SubmitChanges();
-                info.Image = null;
             }
         }
 
@@ -702,47 +704,38 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
 
         topposition = LengthUnitConverter.Convert(topposition, LengthUnit.Twip, LengthUnit.Pixel);
         int minheight = 100; //in pixel
-        for (int i = 0; i < liInfo.Count; i++)
+        for (int i = 0; i < details.Count; i++)
         {
-            Info info = liInfo.ElementAt(i);
+            tbSellingHistoryDetail info = details.ElementAt(i);
             double imageheight = 0;
             double imagewidth = 0;
-            if (info.Image!=null)
+            if (info.tbProduct.Image1 != null)
             {
-                double cellheight=LengthUnitConverter.Convert(xlWorkSheet.Rows[startrow+i-1].Height,LengthUnit.Twip,LengthUnit.Pixel);
+                double cellheight = LengthUnitConverter.Convert(xlWorkSheet.Rows[startrow + i - 1].Height, LengthUnit.Twip, LengthUnit.Pixel);
                 //check if cellheight> image height +2 * margin
-                System.Drawing.Image img = System.Drawing.Image.FromFile(imagelocation + info.Image);
+                System.Drawing.Image img = System.Drawing.Image.FromFile(imagelocation + info.tbProduct.Image1);
                 imageheight = img.Height;
                 imagewidth = img.Width;
 
-                if (cellheight < (img.Height+2*margin))
+                if (cellheight < (img.Height + 2 * margin))
                 {
                     cellheight = imageheight + 2 * margin;
                     if (cellheight < minheight)
                         cellheight = minheight;
                 }
                 xlWorkSheet.Rows[startrow + i - 1].Height = (int)(LengthUnitConverter.Convert(cellheight, LengthUnit.Pixel, LengthUnit.Twip));
-                
-                xlWorkSheet.Pictures.Add(Path.Combine(imagelocation, info.Image), leftposition + margin + (maxwidth - imagewidth) / 2,
-                topposition + (cellheight-imageheight)/2, LengthUnit.Pixel);                
-            }            
+
+                xlWorkSheet.Pictures.Add(Path.Combine(imagelocation, info.tbProduct.Image1), leftposition + margin + (maxwidth - imagewidth) / 2,
+                topposition + (cellheight - imageheight) / 2, LengthUnit.Pixel);
+            }
             topposition += LengthUnitConverter.Convert(xlWorkSheet.Rows[startrow + i - 1].Height, LengthUnit.Twip, LengthUnit.Pixel);
         }
 
         // Return to Client
+        string filename = "baogia_" + quotation.tbStaff.Name + "_" + quotation.QuoteDate.ToString("dd-MM-yyyy") + "_" + quotation.tbLanguage.LanguageName;
         string strPathFolder = Server.MapPath(Global.PATH_FILES);
-        string strPDFFileName = "baogia.pdf";
-        string strExcelFileName = "baogia.xlsx";
-
-        //remove existed files
-        if (System.IO.File.Exists(strPathFolder + strPDFFileName))
-        {
-            File.Delete(strPathFolder + strPDFFileName);
-        }
-        if (System.IO.File.Exists(strPathFolder + strExcelFileName))
-        {
-            File.Delete(strPathFolder + strExcelFileName);
-        }
+        string strPDFFileName = filename + ".pdf";
+        string strExcelFileName = filename + ".xlsx";
 
         xlWorkSheet.PrintOptions.PaperType = PaperType.A4;
         xlWorkSheet.PrintOptions.FitWorksheetWidthToPages = 1;
@@ -753,36 +746,91 @@ public partial class Manage_Director_OrderDetails : System.Web.UI.Page
 
         //save .pdf
         xlWorkBook.Save(strPathFolder + strPDFFileName);
+
+        return filename;
+    }
+
+    private int saveQuotation()
+    {
+        db = new BTHGDataContext();
+        tbQuotation quot = new tbQuotation();
+        quot.OrderNo = (String)ViewState["OrderNo"];
+        quot.LanguageID = int.Parse(listLanguage.SelectedValue);
+        quot.Terms = txtTerms.Text;
+        quot.QuoteDate = Global.getCurrentDateTime();
+        quot.IDStaff = Global.getCurrentIDStaff();
+        db.tbQuotation.InsertOnSubmit(quot);
+        db.SubmitChanges();
+        listExportedQuotation.DataBind();
+        return quot.IDQuotation;
     }
 
     protected void btPDF_Click(object sender, EventArgs e)
     {
         string strPathFolder = Server.MapPath(Global.PATH_FILES);
-        string strPDFFilename = "baogia.pdf";
-
-        makeExcelFile();
-
-        Response.Buffer = true;
-        Response.Clear();
-        Response.AddHeader("Content-Disposition", "attachment; filename=" + strPDFFilename);
-        Response.TransmitFile(strPathFolder + strPDFFilename);
-        Response.Flush();
-        Response.End();
+        string strPDFFilename = makeQuotationFiles(saveQuotation()) + ".pdf";
+        returnFile(strPathFolder, strPDFFilename);
     }
 
     protected void btExcel_Click(object sender, EventArgs e)
     {
         string strPathFolder = Server.MapPath(Global.PATH_FILES);
-        string strExcelFileName = "baogia.xlsx";
+        string strExcelFileName = makeQuotationFiles(saveQuotation()) + ".xlsx";
+        returnFile(strPathFolder,strExcelFileName);
+    }
 
-        makeExcelFile();
-
+    private void returnFile(string path, string fileName)
+    {
         Response.Buffer = true;
         Response.Clear();
-        Response.AddHeader("Content-Disposition", "attachment; filename=" + strExcelFileName);
-        Response.TransmitFile(strPathFolder + strExcelFileName);
+        Response.AddHeader("Content-Disposition", "attachment; filename=" + fileName);
+        Response.TransmitFile(path + fileName);
         Response.Flush();
         Response.End();
     }
 
+    protected void listLanguage_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        loadDefaultTerm();
+    }
+    private void loadDefaultTerm()
+    {
+        if (listLanguage.SelectedIndex != -1)
+        {
+            //load default terms in this language
+            db = new BTHGDataContext();
+            Dictionary<int, String> defaultTerms = db.tbLanguageTranslation.Where(x => x.LanguageConcept.Equals("quotation_default_term_content")).ToDictionary(x => x.IDLanguage, x => x.Translation);
+            txtTerms.Text = defaultTerms[int.Parse(listLanguage.SelectedValue)];
+        }
+    }
+    protected void listLanguage_DataBound(object sender, EventArgs e)
+    {
+        loadDefaultTerm();
+    }
+    protected void btSaveDefaultTerm_Click(object sender, EventArgs e)    
+    {
+        db = new BTHGDataContext();
+        tbLanguageTranslation default_terms = db.tbLanguageTranslation.FirstOrDefault(x => x.LanguageConcept.Equals("") && x.IDLanguage.ToString().Equals(listLanguage.SelectedValue));
+        if (default_terms != null)
+        {
+            default_terms.Translation = txtTerms.Text;
+        }
+        db.SubmitChanges();
+        Response.Write("<script>alert('Lưu điều khoản thành công.')</script>");
+    }
+
+    protected void btDownloadExcel_Click(object sender, EventArgs e)
+    {
+        int IDQuotation = Int32.Parse(((LinkButton)sender).CommandArgument);
+        string strPathFolder = Server.MapPath(Global.PATH_FILES);
+        string filename = makeQuotationFiles(IDQuotation) + ".xlsx";
+        returnFile(strPathFolder, filename);
+    }
+    protected void btDownloadPDF_Click(object sender, EventArgs e)
+    {
+        int IDQuotation = Int32.Parse(((LinkButton)sender).CommandArgument);
+        string strPathFolder = Server.MapPath(Global.PATH_FILES);
+        string filename = makeQuotationFiles(IDQuotation) + ".pdf";
+        returnFile(strPathFolder, filename);
+    }
 }

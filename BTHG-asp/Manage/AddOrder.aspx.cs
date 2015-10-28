@@ -80,43 +80,7 @@ public partial class Manage_Director_AddOrder : System.Web.UI.Page
                     }
                 }
             }
-            //check privilege            
-            btSaveTerms.Visible = Global.isAdmin();
-            txtTerms.Enabled = btSaveTerms.Visible;
-            //
-
-            if (orderModify)
-            {
-                txtTerms.Text = order.Terms;
-            }
-            else
-            {
-                //load terms from file
-                string termslocation = Server.MapPath(Global.PATH_TERMS);
-                if (!File.Exists(termslocation))
-                {
-                    FileStream file = File.Create(termslocation);
-                    file.Close();
-                    string strtmp = "[terms]\n" +
-                        "1. Báo giá không bao gồm chi phí thi công nguồn điện, nguồn gas, hệ thống hút khói...\n" +
-                        "2. Báo giá đã bao gồm chi phí lắp đặt, hiệu chỉnh thiết bị\n" +
-                        "3. Báo giá chưa bao gồm VAT 10%\n" +
-                        "4. Hình thức thanh toán: 100% sau khi giao hàng\n" +
-                        "5. Thời hạn báo giá: 04 tuần kể từ ngày tạo báo giá\n" +
-                        "6. Thời gian gian giao hàng: 3-5 ngày kể từ ngày ký hợp đồng\n" +
-                        "7. Thời gian bảo hành: 06 tháng\n" +
-                        "8. Đơn vị tiền tệ VND\n";
-
-                    File.WriteAllBytes(termslocation, System.Text.Encoding.Unicode.GetBytes(strtmp));
-                }
-                terms = System.Text.Encoding.Unicode.GetString(File.ReadAllBytes(termslocation)).Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-                for (int i = 1; i < terms.Length; i++)
-                {
-                    txtTerms.Text += terms[i].Trim() + "\n";
-                }
-            }
-
+            //          
             if (orderModify)
             {
                 liCustomer.SelectedValue = order.tbCustomerContact.tbCustomer.IDCustomer.ToString();
@@ -349,8 +313,7 @@ public partial class Manage_Director_AddOrder : System.Web.UI.Page
             history.OrderName = txtOrderName.Text;
             history.IDCustomerContact = Int32.Parse(liContact.SelectedValue);
             history.IDStaff = auth.IDStaff;
-                      
-            history.Terms = txtTerms.Text;
+                                  
             db.tbSellingHistory.InsertOnSubmit(history);
 
             //insert details
@@ -372,11 +335,6 @@ public partial class Manage_Director_AddOrder : System.Web.UI.Page
         }
     }
 
-    protected void btSaveTerms_Click(object sender, EventArgs e)
-    {
-        string termslocation = Server.MapPath(Global.PATH_TERMS);
-        File.WriteAllText(termslocation, "[terms]\n"+txtTerms.Text.Trim(), System.Text.Encoding.Unicode);
-    }
 
     private void loadImage()
     {
@@ -412,5 +370,5 @@ public partial class Manage_Director_AddOrder : System.Web.UI.Page
     protected void liGroup_SelectedIndexChanged(object sender, EventArgs e)
     {
         loadType();
-    } 
+    }
 }

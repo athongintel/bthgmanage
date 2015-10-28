@@ -132,6 +132,7 @@
       <Column Name="OrderName" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="IsHidden" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="tbSellingHistory_tbSellingHistoryDetail" Member="tbSellingHistoryDetail" ThisKey="OrderNo" OtherKey="OrderNo" Type="tbSellingHistoryDetail" />
+      <Association Name="tbSellingHistory_tbQuotation" Member="tbQuotation" ThisKey="OrderNo" OtherKey="OrderNo" Type="tbQuotation" />
       <Association Name="tbCustomerContact_tbSellingHistory" Member="tbCustomerContact" ThisKey="IDCustomerContact" OtherKey="IDCustomerContact" Type="tbCustomerContact" IsForeignKey="true" />
       <Association Name="tbStaff_tbSellingHistory" Member="tbStaff" ThisKey="IDStaff" OtherKey="IDStaff" Type="tbStaff" IsForeignKey="true" />
     </Type>
@@ -161,6 +162,7 @@
       <Association Name="tbStaff_tbLogin" Member="tbLogin" ThisKey="IDStaff" OtherKey="IDStaff" Type="tbLogin" />
       <Association Name="tbStaff_tbPriceHistory" Member="tbPriceHistory" ThisKey="IDStaff" OtherKey="IDStaff" Type="tbPriceHistory" />
       <Association Name="tbStaff_tbSellingHistory" Member="tbSellingHistory" ThisKey="IDStaff" OtherKey="IDStaff" Type="tbSellingHistory" />
+      <Association Name="tbStaff_tbQuotation" Member="tbQuotation" ThisKey="IDStaff" OtherKey="IDStaff" Type="tbQuotation" />
     </Type>
   </Table>
   <Table Name="dbo.tbSupplier" Member="tbSupplier">
@@ -194,6 +196,7 @@
       <Column Name="IDLanguage" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="LanguageName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Association Name="tbLanguage_tbLanguageTranslation" Member="tbLanguageTranslation" ThisKey="IDLanguage" OtherKey="IDLanguage" Type="tbLanguageTranslation" />
+      <Association Name="tbLanguage_tbQuotation" Member="tbQuotation" ThisKey="IDLanguage" OtherKey="LanguageID" Type="tbQuotation" />
     </Type>
   </Table>
   <Table Name="bthg.tbLanguageConcept" Member="tbLanguageConcept">
@@ -209,6 +212,19 @@
       <Column Name="Translation" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
       <Association Name="tbLanguage_tbLanguageTranslation" Member="tbLanguage" ThisKey="IDLanguage" OtherKey="IDLanguage" Type="tbLanguage" IsForeignKey="true" />
       <Association Name="tbLanguageConcept_tbLanguageTranslation" Member="tbLanguageConcept" ThisKey="LanguageConcept" OtherKey="LanguageConcept" Type="tbLanguageConcept" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="bthg.tbQuotation" Member="tbQuotation">
+    <Type Name="tbQuotation">
+      <Column Name="IDQuotation" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OrderNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="QuoteDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="LanguageID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Terms" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="IDStaff" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="tbLanguage_tbQuotation" Member="tbLanguage" ThisKey="LanguageID" OtherKey="IDLanguage" Type="tbLanguage" IsForeignKey="true" />
+      <Association Name="tbSellingHistory_tbQuotation" Member="tbSellingHistory" ThisKey="OrderNo" OtherKey="OrderNo" Type="tbSellingHistory" IsForeignKey="true" />
+      <Association Name="tbStaff_tbQuotation" Member="tbStaff" ThisKey="IDStaff" OtherKey="IDStaff" Type="tbStaff" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

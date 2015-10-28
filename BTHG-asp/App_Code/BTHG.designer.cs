@@ -86,6 +86,9 @@ public partial class BTHGDataContext : System.Data.Linq.DataContext
   partial void InserttbLanguageTranslation(tbLanguageTranslation instance);
   partial void UpdatetbLanguageTranslation(tbLanguageTranslation instance);
   partial void DeletetbLanguageTranslation(tbLanguageTranslation instance);
+  partial void InserttbQuotation(tbQuotation instance);
+  partial void UpdatetbQuotation(tbQuotation instance);
+  partial void DeletetbQuotation(tbQuotation instance);
   #endregion
 	
 	public BTHGDataContext() : 
@@ -267,6 +270,14 @@ public partial class BTHGDataContext : System.Data.Linq.DataContext
 		get
 		{
 			return this.GetTable<tbLanguageTranslation>();
+		}
+	}
+	
+	public System.Data.Linq.Table<tbQuotation> tbQuotation
+	{
+		get
+		{
+			return this.GetTable<tbQuotation>();
 		}
 	}
 }
@@ -2805,6 +2816,8 @@ public partial class tbSellingHistory : INotifyPropertyChanging, INotifyProperty
 	
 	private EntitySet<tbSellingHistoryDetail> _tbSellingHistoryDetail;
 	
+	private EntitySet<tbQuotation> _tbQuotation;
+	
 	private EntityRef<tbCustomerContact> _tbCustomerContact;
 	
 	private EntityRef<tbStaff> _tbStaff;
@@ -2834,6 +2847,7 @@ public partial class tbSellingHistory : INotifyPropertyChanging, INotifyProperty
 	public tbSellingHistory()
 	{
 		this._tbSellingHistoryDetail = new EntitySet<tbSellingHistoryDetail>(new Action<tbSellingHistoryDetail>(this.attach_tbSellingHistoryDetail), new Action<tbSellingHistoryDetail>(this.detach_tbSellingHistoryDetail));
+		this._tbQuotation = new EntitySet<tbQuotation>(new Action<tbQuotation>(this.attach_tbQuotation), new Action<tbQuotation>(this.detach_tbQuotation));
 		this._tbCustomerContact = default(EntityRef<tbCustomerContact>);
 		this._tbStaff = default(EntityRef<tbStaff>);
 		OnCreated();
@@ -3020,6 +3034,19 @@ public partial class tbSellingHistory : INotifyPropertyChanging, INotifyProperty
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="tbSellingHistory_tbQuotation", Storage="_tbQuotation", ThisKey="OrderNo", OtherKey="OrderNo")]
+	public EntitySet<tbQuotation> tbQuotation
+	{
+		get
+		{
+			return this._tbQuotation;
+		}
+		set
+		{
+			this._tbQuotation.Assign(value);
+		}
+	}
+	
 	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="tbCustomerContact_tbSellingHistory", Storage="_tbCustomerContact", ThisKey="IDCustomerContact", OtherKey="IDCustomerContact", IsForeignKey=true)]
 	public tbCustomerContact tbCustomerContact
 	{
@@ -3115,6 +3142,18 @@ public partial class tbSellingHistory : INotifyPropertyChanging, INotifyProperty
 	}
 	
 	private void detach_tbSellingHistoryDetail(tbSellingHistoryDetail entity)
+	{
+		this.SendPropertyChanging();
+		entity.tbSellingHistory = null;
+	}
+	
+	private void attach_tbQuotation(tbQuotation entity)
+	{
+		this.SendPropertyChanging();
+		entity.tbSellingHistory = this;
+	}
+	
+	private void detach_tbQuotation(tbQuotation entity)
 	{
 		this.SendPropertyChanging();
 		entity.tbSellingHistory = null;
@@ -3413,6 +3452,8 @@ public partial class tbStaff : INotifyPropertyChanging, INotifyPropertyChanged
 	
 	private EntitySet<tbSellingHistory> _tbSellingHistory;
 	
+	private EntitySet<tbQuotation> _tbQuotation;
+	
     #region Définitions de méthodes d'extensibilité
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -3440,6 +3481,7 @@ public partial class tbStaff : INotifyPropertyChanging, INotifyPropertyChanged
 		this._tbLogin = new EntitySet<tbLogin>(new Action<tbLogin>(this.attach_tbLogin), new Action<tbLogin>(this.detach_tbLogin));
 		this._tbPriceHistory = new EntitySet<tbPriceHistory>(new Action<tbPriceHistory>(this.attach_tbPriceHistory), new Action<tbPriceHistory>(this.detach_tbPriceHistory));
 		this._tbSellingHistory = new EntitySet<tbSellingHistory>(new Action<tbSellingHistory>(this.attach_tbSellingHistory), new Action<tbSellingHistory>(this.detach_tbSellingHistory));
+		this._tbQuotation = new EntitySet<tbQuotation>(new Action<tbQuotation>(this.attach_tbQuotation), new Action<tbQuotation>(this.detach_tbQuotation));
 		OnCreated();
 	}
 	
@@ -3642,6 +3684,19 @@ public partial class tbStaff : INotifyPropertyChanging, INotifyPropertyChanged
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="tbStaff_tbQuotation", Storage="_tbQuotation", ThisKey="IDStaff", OtherKey="IDStaff")]
+	public EntitySet<tbQuotation> tbQuotation
+	{
+		get
+		{
+			return this._tbQuotation;
+		}
+		set
+		{
+			this._tbQuotation.Assign(value);
+		}
+	}
+	
 	public event PropertyChangingEventHandler PropertyChanging;
 	
 	public event PropertyChangedEventHandler PropertyChanged;
@@ -3693,6 +3748,18 @@ public partial class tbStaff : INotifyPropertyChanging, INotifyPropertyChanged
 	}
 	
 	private void detach_tbSellingHistory(tbSellingHistory entity)
+	{
+		this.SendPropertyChanging();
+		entity.tbStaff = null;
+	}
+	
+	private void attach_tbQuotation(tbQuotation entity)
+	{
+		this.SendPropertyChanging();
+		entity.tbStaff = this;
+	}
+	
+	private void detach_tbQuotation(tbQuotation entity)
 	{
 		this.SendPropertyChanging();
 		entity.tbStaff = null;
@@ -4248,6 +4315,8 @@ public partial class tbLanguage : INotifyPropertyChanging, INotifyPropertyChange
 	
 	private EntitySet<tbLanguageTranslation> _tbLanguageTranslation;
 	
+	private EntitySet<tbQuotation> _tbQuotation;
+	
     #region Définitions de méthodes d'extensibilité
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -4261,6 +4330,7 @@ public partial class tbLanguage : INotifyPropertyChanging, INotifyPropertyChange
 	public tbLanguage()
 	{
 		this._tbLanguageTranslation = new EntitySet<tbLanguageTranslation>(new Action<tbLanguageTranslation>(this.attach_tbLanguageTranslation), new Action<tbLanguageTranslation>(this.detach_tbLanguageTranslation));
+		this._tbQuotation = new EntitySet<tbQuotation>(new Action<tbQuotation>(this.attach_tbQuotation), new Action<tbQuotation>(this.detach_tbQuotation));
 		OnCreated();
 	}
 	
@@ -4317,6 +4387,19 @@ public partial class tbLanguage : INotifyPropertyChanging, INotifyPropertyChange
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="tbLanguage_tbQuotation", Storage="_tbQuotation", ThisKey="IDLanguage", OtherKey="LanguageID")]
+	public EntitySet<tbQuotation> tbQuotation
+	{
+		get
+		{
+			return this._tbQuotation;
+		}
+		set
+		{
+			this._tbQuotation.Assign(value);
+		}
+	}
+	
 	public event PropertyChangingEventHandler PropertyChanging;
 	
 	public event PropertyChangedEventHandler PropertyChanged;
@@ -4344,6 +4427,18 @@ public partial class tbLanguage : INotifyPropertyChanging, INotifyPropertyChange
 	}
 	
 	private void detach_tbLanguageTranslation(tbLanguageTranslation entity)
+	{
+		this.SendPropertyChanging();
+		entity.tbLanguage = null;
+	}
+	
+	private void attach_tbQuotation(tbQuotation entity)
+	{
+		this.SendPropertyChanging();
+		entity.tbLanguage = this;
+	}
+	
+	private void detach_tbQuotation(tbQuotation entity)
 	{
 		this.SendPropertyChanging();
 		entity.tbLanguage = null;
@@ -4607,6 +4702,311 @@ public partial class tbLanguageTranslation : INotifyPropertyChanging, INotifyPro
 					this._LanguageConcept = default(string);
 				}
 				this.SendPropertyChanged("tbLanguageConcept");
+			}
+		}
+	}
+	
+	public event PropertyChangingEventHandler PropertyChanging;
+	
+	public event PropertyChangedEventHandler PropertyChanged;
+	
+	protected virtual void SendPropertyChanging()
+	{
+		if ((this.PropertyChanging != null))
+		{
+			this.PropertyChanging(this, emptyChangingEventArgs);
+		}
+	}
+	
+	protected virtual void SendPropertyChanged(String propertyName)
+	{
+		if ((this.PropertyChanged != null))
+		{
+			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+		}
+	}
+}
+
+[global::System.Data.Linq.Mapping.TableAttribute(Name="bthg.tbQuotation")]
+public partial class tbQuotation : INotifyPropertyChanging, INotifyPropertyChanged
+{
+	
+	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+	
+	private int _IDQuotation;
+	
+	private string _OrderNo;
+	
+	private System.DateTime _QuoteDate;
+	
+	private int _LanguageID;
+	
+	private string _Terms;
+	
+	private int _IDStaff;
+	
+	private EntityRef<tbLanguage> _tbLanguage;
+	
+	private EntityRef<tbSellingHistory> _tbSellingHistory;
+	
+	private EntityRef<tbStaff> _tbStaff;
+	
+    #region Définitions de méthodes d'extensibilité
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIDQuotationChanging(int value);
+    partial void OnIDQuotationChanged();
+    partial void OnOrderNoChanging(string value);
+    partial void OnOrderNoChanged();
+    partial void OnQuoteDateChanging(System.DateTime value);
+    partial void OnQuoteDateChanged();
+    partial void OnLanguageIDChanging(int value);
+    partial void OnLanguageIDChanged();
+    partial void OnTermsChanging(string value);
+    partial void OnTermsChanged();
+    partial void OnIDStaffChanging(int value);
+    partial void OnIDStaffChanged();
+    #endregion
+	
+	public tbQuotation()
+	{
+		this._tbLanguage = default(EntityRef<tbLanguage>);
+		this._tbSellingHistory = default(EntityRef<tbSellingHistory>);
+		this._tbStaff = default(EntityRef<tbStaff>);
+		OnCreated();
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDQuotation", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+	public int IDQuotation
+	{
+		get
+		{
+			return this._IDQuotation;
+		}
+		set
+		{
+			if ((this._IDQuotation != value))
+			{
+				this.OnIDQuotationChanging(value);
+				this.SendPropertyChanging();
+				this._IDQuotation = value;
+				this.SendPropertyChanged("IDQuotation");
+				this.OnIDQuotationChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OrderNo", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+	public string OrderNo
+	{
+		get
+		{
+			return this._OrderNo;
+		}
+		set
+		{
+			if ((this._OrderNo != value))
+			{
+				if (this._tbSellingHistory.HasLoadedOrAssignedValue)
+				{
+					throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+				}
+				this.OnOrderNoChanging(value);
+				this.SendPropertyChanging();
+				this._OrderNo = value;
+				this.SendPropertyChanged("OrderNo");
+				this.OnOrderNoChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_QuoteDate", DbType="DateTime NOT NULL")]
+	public System.DateTime QuoteDate
+	{
+		get
+		{
+			return this._QuoteDate;
+		}
+		set
+		{
+			if ((this._QuoteDate != value))
+			{
+				this.OnQuoteDateChanging(value);
+				this.SendPropertyChanging();
+				this._QuoteDate = value;
+				this.SendPropertyChanged("QuoteDate");
+				this.OnQuoteDateChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LanguageID", DbType="Int NOT NULL")]
+	public int LanguageID
+	{
+		get
+		{
+			return this._LanguageID;
+		}
+		set
+		{
+			if ((this._LanguageID != value))
+			{
+				if (this._tbLanguage.HasLoadedOrAssignedValue)
+				{
+					throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+				}
+				this.OnLanguageIDChanging(value);
+				this.SendPropertyChanging();
+				this._LanguageID = value;
+				this.SendPropertyChanged("LanguageID");
+				this.OnLanguageIDChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Terms", DbType="NVarChar(MAX) NOT NULL", CanBeNull=false)]
+	public string Terms
+	{
+		get
+		{
+			return this._Terms;
+		}
+		set
+		{
+			if ((this._Terms != value))
+			{
+				this.OnTermsChanging(value);
+				this.SendPropertyChanging();
+				this._Terms = value;
+				this.SendPropertyChanged("Terms");
+				this.OnTermsChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDStaff", DbType="Int NOT NULL")]
+	public int IDStaff
+	{
+		get
+		{
+			return this._IDStaff;
+		}
+		set
+		{
+			if ((this._IDStaff != value))
+			{
+				if (this._tbStaff.HasLoadedOrAssignedValue)
+				{
+					throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+				}
+				this.OnIDStaffChanging(value);
+				this.SendPropertyChanging();
+				this._IDStaff = value;
+				this.SendPropertyChanged("IDStaff");
+				this.OnIDStaffChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="tbLanguage_tbQuotation", Storage="_tbLanguage", ThisKey="LanguageID", OtherKey="IDLanguage", IsForeignKey=true)]
+	public tbLanguage tbLanguage
+	{
+		get
+		{
+			return this._tbLanguage.Entity;
+		}
+		set
+		{
+			tbLanguage previousValue = this._tbLanguage.Entity;
+			if (((previousValue != value) 
+						|| (this._tbLanguage.HasLoadedOrAssignedValue == false)))
+			{
+				this.SendPropertyChanging();
+				if ((previousValue != null))
+				{
+					this._tbLanguage.Entity = null;
+					previousValue.tbQuotation.Remove(this);
+				}
+				this._tbLanguage.Entity = value;
+				if ((value != null))
+				{
+					value.tbQuotation.Add(this);
+					this._LanguageID = value.IDLanguage;
+				}
+				else
+				{
+					this._LanguageID = default(int);
+				}
+				this.SendPropertyChanged("tbLanguage");
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="tbSellingHistory_tbQuotation", Storage="_tbSellingHistory", ThisKey="OrderNo", OtherKey="OrderNo", IsForeignKey=true)]
+	public tbSellingHistory tbSellingHistory
+	{
+		get
+		{
+			return this._tbSellingHistory.Entity;
+		}
+		set
+		{
+			tbSellingHistory previousValue = this._tbSellingHistory.Entity;
+			if (((previousValue != value) 
+						|| (this._tbSellingHistory.HasLoadedOrAssignedValue == false)))
+			{
+				this.SendPropertyChanging();
+				if ((previousValue != null))
+				{
+					this._tbSellingHistory.Entity = null;
+					previousValue.tbQuotation.Remove(this);
+				}
+				this._tbSellingHistory.Entity = value;
+				if ((value != null))
+				{
+					value.tbQuotation.Add(this);
+					this._OrderNo = value.OrderNo;
+				}
+				else
+				{
+					this._OrderNo = default(string);
+				}
+				this.SendPropertyChanged("tbSellingHistory");
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="tbStaff_tbQuotation", Storage="_tbStaff", ThisKey="IDStaff", OtherKey="IDStaff", IsForeignKey=true)]
+	public tbStaff tbStaff
+	{
+		get
+		{
+			return this._tbStaff.Entity;
+		}
+		set
+		{
+			tbStaff previousValue = this._tbStaff.Entity;
+			if (((previousValue != value) 
+						|| (this._tbStaff.HasLoadedOrAssignedValue == false)))
+			{
+				this.SendPropertyChanging();
+				if ((previousValue != null))
+				{
+					this._tbStaff.Entity = null;
+					previousValue.tbQuotation.Remove(this);
+				}
+				this._tbStaff.Entity = value;
+				if ((value != null))
+				{
+					value.tbQuotation.Add(this);
+					this._IDStaff = value.IDStaff;
+				}
+				else
+				{
+					this._IDStaff = default(int);
+				}
+				this.SendPropertyChanged("tbStaff");
 			}
 		}
 	}

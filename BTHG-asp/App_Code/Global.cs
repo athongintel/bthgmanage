@@ -29,6 +29,11 @@ public class Global
         return db.tbBrand.Single(x=>x.IDBrand==IDBrand).Name;
     }
 
+    public static string dateTimeFormat(DateTime time)
+    {
+        return String.Format("{0:dd-MM-yyyy - HH:mm:ss}", time);
+    }
+
     public static string currencyFormat(double price)
     {
         string p = price.ToString();
